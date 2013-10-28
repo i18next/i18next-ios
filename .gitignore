@@ -17,5 +17,10 @@ DerivedData
 *.hmap
 *.xccheckout
 
-#CocoaPods
+# CocoaPods
 Pods
+*.xcworkspace
+
+# Ruby
+vendor/ruby/2.0.0
+.bundle
