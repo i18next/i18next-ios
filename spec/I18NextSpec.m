@@ -75,7 +75,7 @@ describe(@"I18Next", ^{
             
     });
     
-    describe(@"translation", ^{
+    xdescribe(@"translation", ^{
         
         beforeEach(^{
 
