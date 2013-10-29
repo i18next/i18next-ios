@@ -1,13 +1,16 @@
 PODS:
   - Expecta (0.2.3)
+  - Nocilla (0.7.1)
   - Specta (0.1.11)
 
 DEPENDENCIES:
   - Expecta
+  - Nocilla
   - Specta
 
 SPEC CHECKSUMS:
   Expecta: dbc4a27fabb853bdd2e907e33f11ee43a9a47d0c
+  Nocilla: 79bf72b15b7e6589d3d37ffa7540d7271fb75121
   Specta: 82746c6fd70b104c5d37cfbadb7bf15a2cbc4da0
 
 COCOAPODS: 0.27.1
