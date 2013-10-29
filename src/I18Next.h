@@ -11,16 +11,25 @@
 @interface I18Next : NSObject
 
 @property (nonatomic, copy) NSString* lang;
-@property (nonatomic, copy) NSString* namespace;
+@property (nonatomic, copy) NSArray* namespaces;
+@property (nonatomic, copy) NSString* defaultNamespace;
+@property (nonatomic, assign) BOOL fallbackToDefaultNamespace;
+@property (nonatomic, copy) NSArray* fallbackNamespaces;
 @property (nonatomic, copy) NSDictionary* resourcesStore;
+@property (nonatomic, copy) NSString* namespaceSeparator;
+@property (nonatomic, copy) NSString* keySeparator;
 
 + (instancetype)sharedInstance;
 + (void)setSharedInstance:(I18Next*)instance;
 
 + (NSString*)t:(id)key;
 
+- (void)setNamespace:(NSString*)ns;
+- (void)setFallbackNamespace:(NSString*)fallbackNS;
+
 - (void)load;
 
 - (NSString*)t:(id)key;
+- (NSString*)t:(id)key namespace:(NSString*)ns;
 
 @end
