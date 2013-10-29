@@ -75,15 +75,6 @@ describe(@"I18Next", ^{
             
     });
     
-    xdescribe(@"translation", ^{
-        
-        beforeEach(^{
-
-        });
-        
-        
-    });
-    
 });
 
 SpecEnd

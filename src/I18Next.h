@@ -30,6 +30,8 @@
 - (void)load;
 
 - (NSString*)t:(id)key;
+- (NSString*)t:(id)key variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns;
+- (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables;
 
 @end
