@@ -18,6 +18,8 @@
 @property (nonatomic, copy) NSDictionary* resourcesStore;
 @property (nonatomic, copy) NSString* namespaceSeparator;
 @property (nonatomic, copy) NSString* keySeparator;
+@property (nonatomic, copy) NSString* interpolationPrefix;
+@property (nonatomic, copy) NSString* interpolationSuffix;
 
 + (instancetype)sharedInstance;
 + (void)setSharedInstance:(I18Next*)instance;
@@ -30,8 +32,12 @@
 - (void)load;
 
 - (NSString*)t:(id)key;
+- (NSString*)t:(id)key context:(NSString*)context;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables;
 
 @end

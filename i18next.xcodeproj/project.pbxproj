@@ -13,6 +13,8 @@
 		0F70511D181EE847000AC71E /* libi18next.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD18181EC0B00008F1C8 /* libi18next.a */; };
 		0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */; };
 		0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */; };
+		0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */; };
+		0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEF18201D8B00B59924 /* NSString+I18Next.m */; };
 		0FD96A66181ED7230024F886 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FD96A65181ED7230024F886 /* SenTestingKit.framework */; };
 		0FD96A67181ED7240024F886 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD1B181EC0B00008F1C8 /* Foundation.framework */; };
 		0FD96A68181ED7240024F886 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD2C181EC0B00008F1C8 /* UIKit.framework */; };
@@ -55,6 +57,9 @@
 		0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = I18NextSpec.m; sourceTree = "<group>"; };
 		0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextNamespaceSpec.m; sourceTree = "<group>"; };
 		0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationArraySpec.m; sourceTree = "<group>"; };
+		0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationContextSpec.m; sourceTree = "<group>"; };
+		0F923CEE18201D8B00B59924 /* NSString+I18Next.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+I18Next.h"; sourceTree = "<group>"; };
+		0F923CEF18201D8B00B59924 /* NSString+I18Next.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+I18Next.m"; sourceTree = "<group>"; };
 		0FD96A64181ED7230024F886 /* i18nextspec.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i18nextspec.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FD96A65181ED7230024F886 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		CF1D2EC8F35E43ADBB238CB7 /* libPods-i18nextspec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-i18nextspec.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +127,8 @@
 			children = (
 				0F20FD20181EC0B00008F1C8 /* I18Next.h */,
 				0F20FD22181EC0B00008F1C8 /* I18Next.m */,
+				0F923CEE18201D8B00B59924 /* NSString+I18Next.h */,
+				0F923CEF18201D8B00B59924 /* NSString+I18Next.m */,
 				0F20FD1E181EC0B00008F1C8 /* Supporting Files */,
 			);
 			path = src;
@@ -141,6 +148,7 @@
 				0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */,
 				0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */,
 				0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */,
+				0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */,
 				0F20FD32181EC0B00008F1C8 /* Supporting Files */,
 			);
 			path = spec;
@@ -275,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F20FD23181EC0B00008F1C8 /* I18Next.m in Sources */,
+				0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +293,7 @@
 			files = (
 				0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */,
 				0FD96A77181ED7B40024F886 /* I18NextSpec.m in Sources */,
+				0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */,
 				0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

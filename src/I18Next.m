@@ -7,6 +7,7 @@
 //
 
 #import "I18Next.h"
+#import "NSString+I18Next.h"
 
 static I18Next* gSharedInstance = nil;
 static dispatch_once_t gOnceToken;
@@ -36,7 +37,9 @@ static dispatch_once_t gOnceToken;
     if (self) {
         self.namespace = @"translation";
         self.namespaceSeparator = @":";
-        self.keySeparator = @".";
+        self.keySeparator = kI18NextKeySeparator;
+        self.interpolationPrefix = kI18NextInterpolationPrefix;
+        self.interpolationSuffix = kI18NextInterpolationSuffix;
     }
     return self;
 }
@@ -55,30 +58,47 @@ static dispatch_once_t gOnceToken;
 }
 
 - (NSString*)t:(id)key {
-    return [self t:key namespace:nil];
+    return [self t:key namespace:nil context:nil variables:nil];
+}
+
+- (NSString*)t:(id)key context:(NSString*)context {
+    return [self t:key namespace:nil context:context variables:nil];
 }
 
 - (NSString*)t:(id)key variables:(NSDictionary*)variables {
-    return [self t:key namespace:nil variables:variables];
+    return [self t:key namespace:nil context:nil variables:variables];
+}
+
+- (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables {
+    return [self t:key namespace:nil context:context variables:variables];
 }
 
 - (NSString*)t:(id)key namespace:(NSString*)namespace {
-    return [self t:key namespace:namespace variables:nil];
+    return [self t:key namespace:namespace context:nil variables:nil];
+}
+
+- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context {
+    return [self t:key namespace:namespace context:context variables:nil];
 }
 
 - (NSString*)t:(id)key namespace:(NSString*)namespace variables:(NSDictionary*)variables {
+    return [self t:key namespace:namespace context:nil variables:variables];
+}
+
+- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context variables:(NSDictionary*)variables {
     NSArray* fallbackNamespaces = self.fallbackNamespaces;
     if (!fallbackNamespaces.count && self.fallbackToDefaultNamespace) {
         fallbackNamespaces = @[self.defaultNamespace];
     }
     
-    return [self translate:key namespace:namespace fallbackNamespaces:fallbackNamespaces variables:variables];
+    return [self translate:key namespace:namespace fallbackNamespaces:fallbackNamespaces
+                   context:(NSString*)context variables:variables];
 }
 
 #pragma mark Private Methods
 
 - (NSString*)translate:(id)key namespace:(NSString*)namespace fallbackNamespaces:(NSArray*)fallbackNamespaces
-             variables:(NSDictionary*)variables {
+               context:(NSString*)context variables:(NSDictionary*)variables {
     NSString* ns = namespace.length ? namespace : self.defaultNamespace;
     NSString* stringKey = nil;
     if ([key isKindOfClass:[NSString class]]) {
@@ -88,7 +108,7 @@ static dispatch_once_t gOnceToken;
         for (id potentialKey in key) {
             if ([potentialKey isKindOfClass:[NSString class]]) {
                 NSString* value = [self translate:potentialKey namespace:namespace fallbackNamespaces:fallbackNamespaces
-                                        variables:variables];
+                                          context:context variables:variables];
                 if (value) {
                     return value;
                 }
@@ -102,6 +122,10 @@ static dispatch_once_t gOnceToken;
         stringKey = [stringKey substringFromIndex:nsRange.location + nsRange.length];
     }
     
+    if (context.length) {
+        stringKey = [stringKey stringByAppendingFormat:@"_%@", context];
+    }
+    
     return [self find:stringKey namespace:ns fallbackNamespaces:fallbackNamespaces variables:variables];
 }
 
@@ -112,11 +136,15 @@ static dispatch_once_t gOnceToken;
             continue;
         }
         
-        id value = [self.resourcesStore[lang][ns] valueForKey:key];
+        id value = [self.resourcesStore[lang][ns] valueForKeyPath:key];
         if (value) {
             if ([value isKindOfClass:[NSArray class]]) {
                 value = [value componentsJoinedByString:@"\n"];
             }
+            value = [value i18n_stringByReplacingVariables:variables
+                                       interpolationPrefix:self.interpolationPrefix
+                                       interpolationSuffix:self.interpolationSuffix
+                                              keySeparator:self.keySeparator];
             return value;
         }
     }
