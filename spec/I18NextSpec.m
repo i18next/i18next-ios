@@ -1,6 +1,6 @@
 //
-//  i18nextTests.m
-//  i18nextTests
+//  I18NextSpec.m
+//  i18nextspec
 //
 //  Created by Jean Regisser on 28/10/13.
 //  Copyright (c) 2013 PrePlay, Inc. All rights reserved.
@@ -9,6 +9,7 @@
 #import "Specta.h"
 #define EXP_SHORTHAND
 #import "Expecta.h"
+#import "Nocilla.h"
 
 #import "I18Next.h"
 
@@ -23,8 +24,20 @@ describe(@"I18Next", ^{
       @"en-US": @{ @"translation": @{ @"simple_en-US": @"ok_from_en-US" } },
       };
     
+    beforeAll(^{
+        [[LSNocilla sharedInstance] start];
+    });
+    
+    afterAll(^{
+        [[LSNocilla sharedInstance] stop];
+    });
+    
     beforeEach(^{
         i18n = [I18Next new];
+    });
+    
+    afterEach(^{
+        [[LSNocilla sharedInstance] clearStubs];
     });
     
     describe(@"initialisation", ^{
@@ -45,11 +58,21 @@ describe(@"I18Next", ^{
                 expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
                 expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
                 expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
-            
             });
             
         });
         
+        describe(@"loading from server", ^{
+            
+            xdescribe(@"with static route", ^{
+                
+            });
+            
+            xdescribe(@"with dynamic route", ^{
+                
+            });
+        });
+            
     });
     
     describe(@"translation", ^{
