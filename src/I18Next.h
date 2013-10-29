@@ -1,5 +1,5 @@
 //
-//  i18next.h
+//  I18Next.h
 //  i18next
 //
 //  Created by Jean Regisser on 28/10/13.
@@ -9,5 +9,18 @@
 #import <Foundation/Foundation.h>
 
 @interface I18Next : NSObject
+
+@property (nonatomic, copy) NSString* lang;
+@property (nonatomic, copy) NSString* namespace;
+@property (nonatomic, copy) NSDictionary* resourcesStore;
+
++ (instancetype)sharedInstance;
++ (void)setSharedInstance:(I18Next*)instance;
+
++ (NSString*)t:(id)key;
+
+- (void)load;
+
+- (NSString*)t:(id)key;
 
 @end
