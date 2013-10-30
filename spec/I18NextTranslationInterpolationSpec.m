@@ -70,6 +70,19 @@ describe(@"I18Next translation interpolation", ^{
             .to.equal(@"added something");
         });
         
+        describe(@"when the variable doesn't exist", ^{
+            it(@"should fail without raising an exception", ^{
+                NSString* value = [i18n t:@"interpolationTest4" variables:@{ @"parent": @{ @"grandChild": @{ @"three": @"3" } } }];
+                expect(value).to.equal(@"added __child.grandChild.three__");
+            });
+        });
+        
+        describe(@"when the variable is not of a compatible type", ^{
+            it(@"should fail without raising an exception", ^{
+                NSString* value = [i18n t:@"interpolationTest4" variables:@{ @"child": [NSDate date] }];
+                expect(value).to.equal(@"added __child.grandChild.three__");
+            });
+        });
     });
     
 });

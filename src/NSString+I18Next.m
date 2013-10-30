@@ -7,6 +7,7 @@
 //
 
 #import "NSString+I18Next.h"
+#import "NSObject+I18Next.h"
 
 NSString* const kI18NextInterpolationPrefix = @"__";
 NSString* const kI18NextInterpolationSuffix = @"__";
@@ -53,8 +54,7 @@ NSString* const kI18NextKeySeparator = @".";
     NSString* result = self;
     
     for (NSString* key in keys) {
-        NSString* keyPath = [key stringByReplacingOccurrencesOfString:keySeparator withString:@"."];
-        id value = [variables valueForKeyPath:keyPath];
+        id value = [variables i18n_valueForKeyPath:key keySeparator:keySeparator];
         if (value) {
             result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@%@%@",
                                                                    interpolationPrefix, key, interpolationSuffix]

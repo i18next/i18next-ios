@@ -7,6 +7,7 @@
 //
 
 #import "I18Next.h"
+#import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
 static I18Next* gSharedInstance = nil;
@@ -211,7 +212,7 @@ static dispatch_once_t gOnceToken;
             continue;
         }
         
-        id value = [self.resourcesStore[lang][ns] valueForKeyPath:key];
+        id value = [self.resourcesStore[lang][ns] i18n_valueForKeyPath:key keySeparator:self.keySeparator];
         if (value) {
             if ([value isKindOfClass:[NSArray class]]) {
                 value = [value componentsJoinedByString:@"\n"];
