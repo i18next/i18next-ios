@@ -8,9 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    I18NextLangLoadTypeAll = 0, // Load current and unspecific (example: 'en-US' and 'en')
+    I18NextLangLoadTypeCurrent, // Load current lang set
+	I18NextLangLoadTypeUnspecific // Load unspecific lang (example: 'en')
+} I18NextLangLoadType;
+
 @interface I18Next : NSObject
 
 @property (nonatomic, copy) NSString* lang;
+@property (nonatomic, assign) BOOL lowercaseLang;
+@property (nonatomic, assign) I18NextLangLoadType langLoadType;
+@property (nonatomic, copy) NSString* fallbackLang;
 @property (nonatomic, copy) NSArray* namespaces;
 @property (nonatomic, copy) NSString* defaultNamespace;
 @property (nonatomic, assign) BOOL fallbackToDefaultNamespace;

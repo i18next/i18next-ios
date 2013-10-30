@@ -35,6 +35,7 @@ static dispatch_once_t gOnceToken;
 - (instancetype)init {
     self = [super init];
     if (self) {
+        self.fallbackLang = @"dev";
         self.namespace = @"translation";
         self.namespaceSeparator = @":";
         self.keySeparator = kI18NextKeySeparator;
@@ -136,6 +137,38 @@ static dispatch_once_t gOnceToken;
 
 #pragma mark Private Methods
 
+- (NSArray*)languagesForLang:(NSString*)lang {
+    NSMutableArray* languages = [NSMutableArray array];
+    
+    if (lang.length) {
+        // Split languageCode and countryCode
+        NSRange dashRange = [lang rangeOfString:@"-"];
+        if (dashRange.location != NSNotFound) {
+            NSString* languageCode = [lang substringToIndex:dashRange.location].lowercaseString;
+            NSString* countryCode = [lang substringFromIndex:dashRange.location + dashRange.length];
+            
+            countryCode = self.lowercaseLang ? countryCode.lowercaseString : countryCode.uppercaseString;
+            
+            if (self.langLoadType != I18NextLangLoadTypeUnspecific) {
+                [languages addObject:[NSString stringWithFormat:@"%@-%@", languageCode, countryCode]];
+            }
+            if (self.langLoadType != I18NextLangLoadTypeCurrent) {
+                [languages addObject:languageCode];
+            }
+        }
+        else {
+            [languages addObject:lang];
+        }
+    }
+    
+    NSString* fallbackLang = self.fallbackLang;
+    if (fallbackLang.length && [languages indexOfObject:fallbackLang] == NSNotFound) {
+        [languages addObject:fallbackLang];
+    }
+    
+    return languages;
+}
+
 - (NSString*)translate:(id)key namespace:(NSString*)namespace fallbackNamespaces:(NSArray*)fallbackNamespaces
                context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
     NSString* ns = namespace.length ? namespace : self.defaultNamespace;
@@ -175,7 +208,7 @@ static dispatch_once_t gOnceToken;
 
 - (NSString*)find:(NSString*)key namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
         variables:(NSDictionary*)variables {
-    for (id lang in self.resourcesStore) {
+    for (id lang in [self languagesForLang:self.lang]) {
         if (![lang isKindOfClass:[NSString class]]) {
             continue;
         }
