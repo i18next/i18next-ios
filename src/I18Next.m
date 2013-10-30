@@ -57,6 +57,10 @@ static dispatch_once_t gOnceToken;
     
 }
 
+- (BOOL)exists:(NSString*)key {
+    return !![self t:key namespace:nil context:nil variables:nil defaultValue:nil];
+}
+
 - (NSString*)t:(id)key {
     return [self t:key namespace:nil context:nil variables:nil defaultValue:nil];
 }

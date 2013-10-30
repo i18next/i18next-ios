@@ -31,6 +31,8 @@
 
 - (void)load;
 
+- (BOOL)exists:(NSString*)key;
+
 - (NSString*)t:(id)key;
 - (NSString*)t:(id)key defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context;
