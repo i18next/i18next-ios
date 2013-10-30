@@ -13,6 +13,8 @@
 
 #import "I18Next.h"
 
+#import "I18NextSpecHelper.h"
+
 SpecBegin(I18Next)
 
 describe(@"I18Next", ^{
@@ -33,7 +35,7 @@ describe(@"I18Next", ^{
     });
     
     beforeEach(^{
-        i18n = [I18Next new];
+        i18n = createDefaultI18NextTestInstance();
     });
     
     afterEach(^{
