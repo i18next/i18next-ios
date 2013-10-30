@@ -60,7 +60,7 @@ static dispatch_once_t gOnceToken;
 }
 
 - (BOOL)exists:(NSString*)key {
-    return !![self t:key namespace:nil context:nil variables:nil defaultValue:nil];
+    return !![self translateKey:key namespace:nil context:nil variables:nil defaultValue:nil];
 }
 
 - (NSString*)t:(id)key {
@@ -127,13 +127,8 @@ static dispatch_once_t gOnceToken;
 
 - (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context variables:(NSDictionary*)variables
   defaultValue:(NSString*)defaultValue {
-    NSArray* fallbackNamespaces = self.fallbackNamespaces;
-    if (!fallbackNamespaces.count && self.fallbackToDefaultNamespace) {
-        fallbackNamespaces = @[self.defaultNamespace];
-    }
-    
-    return [self translate:key namespace:namespace fallbackNamespaces:fallbackNamespaces
-                   context:(NSString*)context variables:variables defaultValue:defaultValue];
+    return [self translate:key namespace:namespace context:(NSString*)context variables:variables
+              defaultValue:defaultValue];
 }
 
 #pragma mark Private Methods
@@ -170,9 +165,8 @@ static dispatch_once_t gOnceToken;
     return languages;
 }
 
-- (NSString*)translate:(id)key namespace:(NSString*)namespace fallbackNamespaces:(NSArray*)fallbackNamespaces
-               context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
-    NSString* ns = namespace.length ? namespace : self.defaultNamespace;
+- (NSString*)translate:(id)key namespace:(NSString*)namespace context:(NSString*)context
+             variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
     NSString* stringKey = nil;
     if ([key isKindOfClass:[NSString class]]) {
         stringKey = key;
@@ -180,8 +174,9 @@ static dispatch_once_t gOnceToken;
     else if ([key isKindOfClass:[NSArray class]]) {
         for (id potentialKey in key) {
             if ([potentialKey isKindOfClass:[NSString class]]) {
-                NSString* value = [self translate:potentialKey namespace:namespace fallbackNamespaces:fallbackNamespaces
-                                          context:context variables:variables defaultValue:defaultValue];
+                stringKey = potentialKey;
+                NSString* value = [self translateKey:potentialKey namespace:namespace context:context
+                                           variables:variables defaultValue:defaultValue];
                 if (value) {
                     return value;
                 }
@@ -189,10 +184,22 @@ static dispatch_once_t gOnceToken;
         }
     }
     
+    return [self translateKey:stringKey namespace:namespace context:context
+                    variables:variables defaultValue:defaultValue ?: stringKey];
+}
+
+- (NSString*)translateKey:(NSString*)stringKey namespace:(NSString*)namespace context:(NSString*)context
+                variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+    NSString* ns = namespace.length ? namespace : self.defaultNamespace;
     NSRange nsRange = [stringKey rangeOfString:self.namespaceSeparator];
     if (nsRange.location != NSNotFound) {
         ns = [stringKey substringToIndex:nsRange.location];
         stringKey = [stringKey substringFromIndex:nsRange.location + nsRange.length];
+    }
+    
+    NSArray* fallbackNamespaces = self.fallbackNamespaces;
+    if (!fallbackNamespaces.count && self.fallbackToDefaultNamespace) {
+        fallbackNamespaces = @[self.defaultNamespace];
     }
     
     if (context.length) {
@@ -226,7 +233,7 @@ static dispatch_once_t gOnceToken;
     if (!result && fallbackNamespaces.count) {
         for (NSString* fallbackNS in fallbackNamespaces) {
             id value = [self find:key namespace:fallbackNS fallbackNamespaces:nil variables:variables
-                     defaultValue:defaultValue];
+                     defaultValue:nil];
             if (value) {
                 return value;
             }
