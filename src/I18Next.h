@@ -32,12 +32,21 @@
 - (void)load;
 
 - (NSString*)t:(id)key;
+- (NSString*)t:(id)key defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context;
+- (NSString*)t:(id)key context:(NSString*)context defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns;
+- (NSString*)t:(id)key namespace:(NSString*)ns defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 
 @end
