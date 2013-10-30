@@ -24,6 +24,8 @@ typedef enum {
 @property (nonatomic, copy) NSString* defaultNamespace;
 @property (nonatomic, assign) BOOL fallbackToDefaultNamespace;
 @property (nonatomic, copy) NSArray* fallbackNamespaces;
+@property (nonatomic, assign) BOOL fallbackOnNull;
+@property (nonatomic, assign) BOOL returnObjectTrees;
 @property (nonatomic, copy) NSDictionary* resourcesStore;
 @property (nonatomic, copy) NSString* namespaceSeparator;
 @property (nonatomic, copy) NSString* keySeparator;

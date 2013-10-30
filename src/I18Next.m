@@ -37,6 +37,7 @@ static dispatch_once_t gOnceToken;
     self = [super init];
     if (self) {
         self.fallbackLang = @"dev";
+        self.fallbackOnNull = YES;
         self.namespace = @"translation";
         self.namespaceSeparator = @":";
         self.keySeparator = kI18NextKeySeparator;
@@ -212,7 +213,7 @@ static dispatch_once_t gOnceToken;
 
 - (NSString*)find:(NSString*)key namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
         variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
-    NSString* result = nil;
+    id result = nil;
     
     for (id lang in [self languagesForLang:self.lang]) {
         if (![lang isKindOfClass:[NSString class]]) {
@@ -221,8 +222,11 @@ static dispatch_once_t gOnceToken;
         
         id value = [self.resourcesStore[lang][ns] i18n_valueForKeyPath:key keySeparator:self.keySeparator];
         if (value) {
-            if ([value isKindOfClass:[NSArray class]]) {
+            if ([value isKindOfClass:[NSArray class]] && !self.returnObjectTrees) {
                 value = [value componentsJoinedByString:@"\n"];
+            }
+            else if ([value isEqual:[NSNull null]] && self.fallbackOnNull) {
+                continue;
             }
             result = value;
             break;
@@ -244,10 +248,12 @@ static dispatch_once_t gOnceToken;
         result = defaultValue;
     }
     
-    result = [result i18n_stringByReplacingVariables:variables
-                                 interpolationPrefix:self.interpolationPrefix
-                                 interpolationSuffix:self.interpolationSuffix
-                                        keySeparator:self.keySeparator];
+    if ([result isKindOfClass:[NSString class]]) {
+        result = [result i18n_stringByReplacingVariables:variables
+                                     interpolationPrefix:self.interpolationPrefix
+                                     interpolationSuffix:self.interpolationSuffix
+                                            keySeparator:self.keySeparator];
+    }
     
     return result;
 }
