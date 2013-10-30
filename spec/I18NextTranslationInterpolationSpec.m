@@ -83,6 +83,44 @@ describe(@"I18Next translation interpolation", ^{
                 expect(value).to.equal(@"added __child.grandChild.three__");
             });
         });
+       
+        describe(@"with different prefix/suffix via options", ^{
+            
+            beforeEach(^{
+                i18n.resourcesStore =
+                @{
+                  @"dev": @{ @"translation": @{ } },
+                  @"en": @{ @"translation": @{ } },
+                  @"en-US": @{ @"translation": @{
+                                       @"interpolationTest1": @"added *toAdd*",
+                                       @"interpolationTest2": @"added *toAdd* *toAdd* twice",
+                                       @"interpolationTest3": @"added *child.one* *child.two*",
+                                       @"interpolationTest4": @"added *child.grandChild.three*",
+                                       } },
+                  };
+                i18n.interpolationPrefix = @"*";
+                i18n.interpolationSuffix = @"*";
+            });
+            
+            it(@"should replace passed in key/values", ^{
+                expect([i18n t:@"interpolationTest1" variables:@{ @"toAdd": @"something" }]).to.equal(@"added something");
+                expect([i18n t:@"interpolationTest2" variables:@{ @"toAdd": @"something" }]).to.equal(@"added something something twice");
+                NSString* value = [i18n t:@"interpolationTest3" variables:@{ @"child": @{ @"one": @"1", @"two": @"2" } }];
+                expect(value).to.equal(@"added 1 2");
+                NSString* value2 = [i18n t:@"interpolationTest4" variables:@{ @"child": @{ @"grandChild": @{ @"three": @"3" } } }];
+                expect(value2).to.equal(@"added 3");
+            });
+            
+            it(@"should not escape HTML", ^{
+                expect([i18n t:@"interpolationTest1" variables:@{ @"toAdd": @"<html>" }]).to.equal(@"added <html>");
+            });
+            
+            it(@"should replace passed in key/values on defaultValue", ^{
+                expect([i18n t:@"interpolationTest5" variables:@{ @"toAdd": @"something" } defaultValue:@"added *toAdd*"])
+                .to.equal(@"added something");
+            });
+            
+        });
     });
     
 });
