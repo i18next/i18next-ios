@@ -12,6 +12,7 @@
 		0F20FD23181EC0B00008F1C8 /* I18Next.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F20FD22181EC0B00008F1C8 /* I18Next.m */; };
 		0F3033481820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F3033471820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m */; };
 		0F30334A182102F60066DA20 /* I18NextTranslationExistsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F303349182102F60066DA20 /* I18NextTranslationExistsSpec.m */; };
+		0F30334C182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F30334B182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m */; };
 		0F30334F182117390066DA20 /* I18NextSpecHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F30334E182117390066DA20 /* I18NextSpecHelper.m */; };
 		0F70511D181EE847000AC71E /* libi18next.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD18181EC0B00008F1C8 /* libi18next.a */; };
 		0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */; };
@@ -60,6 +61,7 @@
 		0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = I18NextSpec.m; sourceTree = "<group>"; };
 		0F3033471820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationDefaultValueSpec.m; sourceTree = "<group>"; };
 		0F303349182102F60066DA20 /* I18NextTranslationExistsSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationExistsSpec.m; sourceTree = "<group>"; };
+		0F30334B182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationEmptyValueSpec.m; sourceTree = "<group>"; };
 		0F30334D182117390066DA20 /* I18NextSpecHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I18NextSpecHelper.h; sourceTree = "<group>"; };
 		0F30334E182117390066DA20 /* I18NextSpecHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextSpecHelper.m; sourceTree = "<group>"; };
 		0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextNamespaceSpec.m; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */,
 				0F3033471820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m */,
 				0F303349182102F60066DA20 /* I18NextTranslationExistsSpec.m */,
+				0F30334B182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m */,
 				0F30334D182117390066DA20 /* I18NextSpecHelper.h */,
 				0F30334E182117390066DA20 /* I18NextSpecHelper.m */,
 				0F20FD32181EC0B00008F1C8 /* Supporting Files */,
@@ -305,6 +308,7 @@
 				0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */,
 				0F3033481820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m in Sources */,
 				0F30334F182117390066DA20 /* I18NextSpecHelper.m in Sources */,
+				0F30334C182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m in Sources */,
 				0F30334A182102F60066DA20 /* I18NextTranslationExistsSpec.m in Sources */,
 				0FD96A77181ED7B40024F886 /* I18NextSpec.m in Sources */,
 				0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */,
