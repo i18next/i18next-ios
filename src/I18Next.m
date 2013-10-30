@@ -198,16 +198,14 @@ static dispatch_once_t gOnceToken;
         stringKey = [stringKey stringByAppendingFormat:@"_%@", context];
     }
     
-    NSString* value = [self find:stringKey namespace:ns fallbackNamespaces:fallbackNamespaces variables:variables];
-    if (!value) {
-        value = defaultValue;
-    }
-    
-    return value;
+    return [self find:stringKey namespace:ns fallbackNamespaces:fallbackNamespaces variables:variables
+         defaultValue:defaultValue];
 }
 
 - (NSString*)find:(NSString*)key namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
-        variables:(NSDictionary*)variables {
+        variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+    NSString* result = nil;
+    
     for (id lang in [self languagesForLang:self.lang]) {
         if (![lang isKindOfClass:[NSString class]]) {
             continue;
@@ -218,25 +216,32 @@ static dispatch_once_t gOnceToken;
             if ([value isKindOfClass:[NSArray class]]) {
                 value = [value componentsJoinedByString:@"\n"];
             }
-            value = [value i18n_stringByReplacingVariables:variables
-                                       interpolationPrefix:self.interpolationPrefix
-                                       interpolationSuffix:self.interpolationSuffix
-                                              keySeparator:self.keySeparator];
-            return value;
+            result = value;
+            break;
         }
     }
     
     // Not found, fallback?
-    if (fallbackNamespaces.count) {
+    if (!result && fallbackNamespaces.count) {
         for (NSString* fallbackNS in fallbackNamespaces) {
-            id value = [self find:key namespace:fallbackNS fallbackNamespaces:nil variables:variables];
+            id value = [self find:key namespace:fallbackNS fallbackNamespaces:nil variables:variables
+                     defaultValue:defaultValue];
             if (value) {
                 return value;
             }
         }
     }
     
-    return nil;
+    if (!result) {
+        result = defaultValue;
+    }
+    
+    result = [result i18n_stringByReplacingVariables:variables
+                                 interpolationPrefix:self.interpolationPrefix
+                                 interpolationSuffix:self.interpolationSuffix
+                                        keySeparator:self.keySeparator];
+    
+    return result;
 }
 
 @end
