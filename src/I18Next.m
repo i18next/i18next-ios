@@ -228,6 +228,20 @@ static dispatch_once_t gOnceToken;
             else if ([value isEqual:[NSNull null]] && self.fallbackOnNull) {
                 continue;
             }
+            else if ([value isKindOfClass:[NSDictionary class]]) {
+                if (!self.returnObjectTrees) {
+                    value = [NSString stringWithFormat:@"key '%@%@%@ (%@)' returned an object instead of a string",
+                             ns, self.namespaceSeparator, key, lang];
+                }
+                else {
+                    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:((NSDictionary*)value).count];
+                    for (id childKey in value) {
+                        dict[childKey] = [self translate:[NSString stringWithFormat:@"%@%@%@", key, self.keySeparator, childKey]
+                                               namespace:ns context:nil variables:variables defaultValue:nil];
+                    }
+                    value = dict.copy;
+                }
+            }
             result = value;
             break;
         }
