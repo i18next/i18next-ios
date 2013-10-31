@@ -20,6 +20,7 @@
 		0F303358182182AE0066DA20 /* I18NextTranslationNullValueSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F303357182182AE0066DA20 /* I18NextTranslationNullValueSpec.m */; };
 		0F30335A182242210066DA20 /* I18NextTranslationObjectValueSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F303359182242210066DA20 /* I18NextTranslationObjectValueSpec.m */; };
 		0F30335C18225AE50066DA20 /* I18NextTranslationPluralsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F30335B18225AE50066DA20 /* I18NextTranslationPluralsSpec.m */; };
+		0F30335F1822A5C70066DA20 /* I18NextPlurals.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F30335E1822A5C70066DA20 /* I18NextPlurals.m */; };
 		0F70511D181EE847000AC71E /* libi18next.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD18181EC0B00008F1C8 /* libi18next.a */; };
 		0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */; };
 		0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */; };
@@ -77,6 +78,8 @@
 		0F303357182182AE0066DA20 /* I18NextTranslationNullValueSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationNullValueSpec.m; sourceTree = "<group>"; };
 		0F303359182242210066DA20 /* I18NextTranslationObjectValueSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationObjectValueSpec.m; sourceTree = "<group>"; };
 		0F30335B18225AE50066DA20 /* I18NextTranslationPluralsSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationPluralsSpec.m; sourceTree = "<group>"; };
+		0F30335D1822A5C60066DA20 /* I18NextPlurals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I18NextPlurals.h; sourceTree = "<group>"; };
+		0F30335E1822A5C70066DA20 /* I18NextPlurals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextPlurals.m; sourceTree = "<group>"; };
 		0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextNamespaceSpec.m; sourceTree = "<group>"; };
 		0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationArraySpec.m; sourceTree = "<group>"; };
 		0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationContextSpec.m; sourceTree = "<group>"; };
@@ -153,6 +156,8 @@
 				0F923CEF18201D8B00B59924 /* NSString+I18Next.m */,
 				0F303352182143CB0066DA20 /* NSObject+I18Next.h */,
 				0F303353182143CB0066DA20 /* NSObject+I18Next.m */,
+				0F30335D1822A5C60066DA20 /* I18NextPlurals.h */,
+				0F30335E1822A5C70066DA20 /* I18NextPlurals.m */,
 				0F20FD1E181EC0B00008F1C8 /* Supporting Files */,
 			);
 			path = src;
@@ -319,6 +324,7 @@
 				0F303354182143CB0066DA20 /* NSObject+I18Next.m in Sources */,
 				0F20FD23181EC0B00008F1C8 /* I18Next.m in Sources */,
 				0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */,
+				0F30335F1822A5C70066DA20 /* I18NextPlurals.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

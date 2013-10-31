@@ -16,6 +16,8 @@ typedef enum {
 
 extern NSString* const kI18NextPluralSuffix;
 
+@class I18NextPlurals;
+
 @interface I18Next : NSObject
 
 @property (nonatomic, copy) NSString* lang;
@@ -34,6 +36,8 @@ extern NSString* const kI18NextPluralSuffix;
 @property (nonatomic, copy) NSString* interpolationPrefix;
 @property (nonatomic, copy) NSString* interpolationSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
+
+@property (nonatomic, strong) I18NextPlurals* plurals;
 
 + (instancetype)sharedInstance;
 + (void)setSharedInstance:(I18Next*)instance;

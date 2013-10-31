@@ -7,6 +7,7 @@
 //
 
 #import "I18Next.h"
+#import "I18NextPlurals.h"
 #import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
@@ -46,6 +47,8 @@ static dispatch_once_t gOnceToken;
         self.interpolationPrefix = kI18NextInterpolationPrefix;
         self.interpolationSuffix = kI18NextInterpolationSuffix;
         self.pluralSuffix = kI18NextPluralSuffix;
+        
+        self.plurals = [I18NextPlurals sharedInstance];
     }
     return self;
 }
@@ -302,7 +305,16 @@ static dispatch_once_t gOnceToken;
         NSUInteger countInt = count.unsignedIntegerValue;
         if (countInt != 1) {
             NSString* pluralKey = [stringKey stringByAppendingString:self.pluralSuffix];
-            NSString* value = [self translateKey:pluralKey namespace:ns context:nil count:nil variables:variablesWithCount defaultValue:nil];
+            NSInteger pluralNumber = [self.plurals numberForLang:self.lang count:countInt];
+            if (pluralNumber >= 0) {
+                pluralKey = [pluralKey stringByAppendingFormat:@"_%d", pluralNumber];
+            }
+//            else if (pluralNumber == 1) {
+//                pluralKey = stringKey;
+//            }
+            
+            NSString* value = [self translateKey:pluralKey namespace:ns context:nil count:nil
+                                       variables:variablesWithCount defaultValue:nil];
             if (value) {
                 return value;
             }
