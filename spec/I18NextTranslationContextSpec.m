@@ -79,9 +79,9 @@ describe(@"I18Next", ^{
                     @{
                       @"dev": @{ },
                       @"en": @{ @"translation": @{
-                                        @"friend_context": @"A friend",
-                                        @"friend_context_male": @"A boyfriend",
-                                        @"friend_context_female": @"A girlfriend",
+                                        @"friend_context": @"__count__ friend",
+                                        @"friend_context_male": @"__count__ boyfriend",
+                                        @"friend_context_female": @"__count__ girlfriend",
                                         @"friend_context_plural": @"__count__ friends",
                                         @"friend_context_male_plural": @"__count__ boyfriends",
                                         @"friend_context_female_plural": @"__count__ girlfriends",
@@ -89,8 +89,6 @@ describe(@"I18Next", ^{
                                 },
                       @"en-US": @{ @"translation": @{ } },
                       };
-                    i18n.namespaces = @[ @"ns.1", @"ns.2" ];
-                    i18n.defaultNamespace = @"ns.1";
                 });
                 
                 it(@"should provide correct context form", ^{
@@ -99,7 +97,7 @@ describe(@"I18Next", ^{
                     expect([i18n t:@"friend_context" context:@"male" count:1]).to.equal(@"1 boyfriend");
                     expect([i18n t:@"friend_context" context:@"female" count:1]).to.equal(@"1 girlfriend");
                     
-                    expect([i18n t:@"friend_context" count:10]).to.equal(@"1 friend");
+                    expect([i18n t:@"friend_context" count:10]).to.equal(@"10 friends");
                     expect([i18n t:@"friend_context" context:@"" count:10]).to.equal(@"10 friends");
                     expect([i18n t:@"friend_context" context:@"male" count:10]).to.equal(@"10 boyfriends");
                     expect([i18n t:@"friend_context" context:@"female" count:10]).to.equal(@"10 girlfriends");

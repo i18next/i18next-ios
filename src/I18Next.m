@@ -302,7 +302,7 @@ static dispatch_once_t gOnceToken;
         NSUInteger countInt = count.unsignedIntegerValue;
         if (countInt != 1) {
             NSString* pluralKey = [stringKey stringByAppendingString:self.pluralSuffix];
-            NSString* value = [self translateKey:pluralKey namespace:ns context:context count:nil variables:variablesWithCount defaultValue:nil];
+            NSString* value = [self translateKey:pluralKey namespace:ns context:nil count:nil variables:variablesWithCount defaultValue:nil];
             if (value) {
                 return value;
             }
