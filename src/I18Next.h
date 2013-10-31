@@ -14,6 +14,8 @@ typedef enum {
 	I18NextLangLoadTypeUnspecific // Load unspecific lang (example: 'en')
 } I18NextLangLoadType;
 
+extern NSString* const kI18NextPluralSuffix;
+
 @interface I18Next : NSObject
 
 @property (nonatomic, copy) NSString* lang;
@@ -31,6 +33,7 @@ typedef enum {
 @property (nonatomic, copy) NSString* keySeparator;
 @property (nonatomic, copy) NSString* interpolationPrefix;
 @property (nonatomic, copy) NSString* interpolationSuffix;
+@property (nonatomic, copy) NSString* pluralSuffix;
 
 + (instancetype)sharedInstance;
 + (void)setSharedInstance:(I18Next*)instance;
@@ -45,21 +48,42 @@ typedef enum {
 - (BOOL)exists:(NSString*)key;
 
 - (NSString*)t:(id)key;
+- (NSString*)t:(id)key count:(NSUInteger)count;
 - (NSString*)t:(id)key defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context;
+- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count;
 - (NSString*)t:(id)key context:(NSString*)context defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns;
+- (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count;
 - (NSString*)t:(id)key namespace:(NSString*)ns defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+     variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables
   defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+     variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 
 @end
