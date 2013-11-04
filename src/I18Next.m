@@ -7,16 +7,78 @@
 //
 
 #import "I18Next.h"
+#import <objc/runtime.h>
 #import "I18NextPlurals.h"
 #import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
 NSString* const kI18NextPluralSuffix = @"_plural";
 
+NSString* const kI18NextTranslateOptionNamespace = @"namespace";
+NSString* const kI18NextTranslateOptionContext = @"context";
+NSString* const kI18NextTranslateOptionCount = @"count";
+NSString* const kI18NextTranslateOptionVariables = @"variables";
+NSString* const kI18NextTranslateOptionDefaultValue = @"defaultValue";
+
 static I18Next* gSharedInstance = nil;
 static dispatch_once_t gOnceToken;
 
 @implementation I18Next
+
+static NSString* genericTranslate(id self, SEL _cmd, ...) {
+    va_list arglist;
+    va_start(arglist, _cmd);
+
+    id key = va_arg(arglist, id);
+    NSString *selectorName = NSStringFromSelector(_cmd);
+    NSArray* argNames = [selectorName componentsSeparatedByString:@":"];
+    NSMethodSignature* sig = [self methodSignatureForSelector:_cmd];
+    NSMutableDictionary* options = [NSMutableDictionary dictionaryWithCapacity:sig.numberOfArguments - 2];
+    // Loop over arguments after key
+    for (NSUInteger i = 3; i < sig.numberOfArguments; i++) {
+        const char* type = [sig getArgumentTypeAtIndex:i];
+        
+        id argValue = nil;
+        if (strcmp(type, @encode(NSUInteger)) == 0) {
+            NSUInteger count = va_arg(arglist, NSUInteger);
+            argValue = @(count);
+        }
+        else if (strcmp(type, @encode(id)) == 0) {
+            argValue = va_arg(arglist, id);
+        }
+        else {
+            NSAssert(NO, @"Unsupported argument type: '%s'", type);
+        }
+        
+        if (argValue) {
+            options[argNames[i - 2]] = argValue;
+        }
+    }
+    
+    va_end(arglist);
+    
+    return [self t:key options:options];
+}
+
++ (BOOL)resolveInstanceMethod:(SEL)sel {
+    NSString *selectorName = NSStringFromSelector(sel);
+    NSString *prefix = @"t:";
+    if ([selectorName hasPrefix:prefix]) {
+        NSArray* args = [selectorName componentsSeparatedByString:@":"];
+        NSMutableString* types = [[NSMutableString alloc] initWithString:@"@@:"];
+        for (id arg in args) {
+            if ([arg isEqualToString:kI18NextTranslateOptionCount]) {
+                [types appendFormat:@"%s", @encode(NSUInteger)];
+            }
+            else {
+                [types appendString:@"@"];
+            }
+        }
+        class_addMethod(self, sel, (IMP)genericTranslate, types.UTF8String);
+        return YES;
+    }
+    return [super resolveInstanceMethod:sel];
+}
 
 + (instancetype)sharedInstance {
     dispatch_once(&gOnceToken, ^{
@@ -70,156 +132,14 @@ static dispatch_once_t gOnceToken;
     return !![self translateKey:key namespace:nil context:nil count:nil variables:nil defaultValue:nil];
 }
 
-- (NSString*)t:(id)key {
-    return [self translate:key namespace:nil context:nil count:nil variables:nil defaultValue:nil];
-}
-
-- (NSString*)t:(id)key count:(NSUInteger)count {
-    return [self translate:key namespace:nil context:nil count:@(count) variables:nil
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:nil count:nil variables:nil defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key count:(NSUInteger)count defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:nil count:@(count) variables:nil
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context {
-    return [self translate:key namespace:nil context:context count:nil variables:nil defaultValue:nil];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count {
-    return [self translate:key namespace:nil context:context count:@(count) variables:nil
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:context count:nil variables:nil defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:context count:@(count) variables:nil
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key variables:(NSDictionary*)variables {
-    return [self translate:key namespace:nil context:nil count:nil variables:variables defaultValue:nil];
-}
-
-- (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables {
-    return [self translate:key namespace:nil context:nil count:@(count) variables:variables
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:nil count:nil variables:variables defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:nil count:@(count) variables:variables
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables {
-    return [self translate:key namespace:nil context:context count:nil variables:variables defaultValue:nil];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables {
-    return [self translate:key namespace:nil context:context count:@(count) variables:variables
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:context count:nil variables:variables defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:nil context:context count:@(count) variables:variables
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace {
-    return [self translate:key namespace:namespace context:nil count:nil variables:nil defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace count:(NSUInteger)count {
-    return [self translate:key namespace:namespace context:nil count:@(count) variables:nil
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:nil count:nil variables:nil defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace count:(NSUInteger)count defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:nil count:@(count) variables:nil
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context {
-    return [self translate:key namespace:namespace context:context count:nil variables:nil defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context count:(NSUInteger)count {
-    return [self translate:key namespace:namespace context:context count:@(count) variables:nil
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:context count:nil variables:nil defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context count:(NSUInteger)count
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:context count:@(count) variables:nil
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace variables:(NSDictionary*)variables {
-    return [self translate:key namespace:namespace context:nil count:nil variables:variables defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace count:(NSUInteger)count variables:(NSDictionary*)variables {
-    return [self translate:key namespace:namespace context:nil count:@(count) variables:variables
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace variables:(NSDictionary*)variables
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:nil count:nil variables:variables defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace count:(NSUInteger)count variables:(NSDictionary*)variables
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:nil count:@(count) variables:variables
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context variables:(NSDictionary*)variables {
-    return [self translate:key namespace:namespace context:context count:nil variables:variables defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context count:(NSUInteger)count
-     variables:(NSDictionary*)variables {
-    return [self translate:key namespace:namespace context:context count:@(count) variables:variables
-              defaultValue:nil];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context variables:(NSDictionary*)variables
-  defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:context count:nil variables:variables
-              defaultValue:defaultValue];
-}
-
-- (NSString*)t:(id)key namespace:(NSString*)namespace context:(NSString*)context count:(NSUInteger)count
-     variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
-    return [self translate:key namespace:namespace context:context count:@(count) variables:variables
+- (NSString*)t:(id)key options:(NSDictionary*)options {
+    NSString* namespace = options[kI18NextTranslateOptionNamespace];
+    NSString* context = options[kI18NextTranslateOptionContext];
+    NSNumber* count = options[kI18NextTranslateOptionCount];
+    NSDictionary* variables = options[kI18NextTranslateOptionVariables];
+    NSString* defaultValue = options[kI18NextTranslateOptionDefaultValue];
+    
+    return [self translate:key namespace:namespace context:context count:count variables:variables
               defaultValue:defaultValue];
 }
 

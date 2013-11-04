@@ -16,40 +16,16 @@ typedef enum {
 
 extern NSString* const kI18NextPluralSuffix;
 
-@class I18NextPlurals;
+extern NSString* const kI18NextTranslateOptionNamespace;
+extern NSString* const kI18NextTranslateOptionContext;
+extern NSString* const kI18NextTranslateOptionCount;
+extern NSString* const kI18NextTranslateOptionVariables;
+extern NSString* const kI18NextTranslateOptionDefaultValue;
 
-@interface I18Next : NSObject
+// Helper methods that end up using `t:options:`
+@protocol I18NextDynamicInterface <NSObject>
 
-@property (nonatomic, copy) NSString* lang;
-@property (nonatomic, assign) BOOL lowercaseLang;
-@property (nonatomic, assign) I18NextLangLoadType langLoadType;
-@property (nonatomic, copy) NSString* fallbackLang;
-@property (nonatomic, copy) NSArray* namespaces;
-@property (nonatomic, copy) NSString* defaultNamespace;
-@property (nonatomic, assign) BOOL fallbackToDefaultNamespace;
-@property (nonatomic, copy) NSArray* fallbackNamespaces;
-@property (nonatomic, assign) BOOL fallbackOnNull;
-@property (nonatomic, assign) BOOL returnObjectTrees;
-@property (nonatomic, copy) NSDictionary* resourcesStore;
-@property (nonatomic, copy) NSString* namespaceSeparator;
-@property (nonatomic, copy) NSString* keySeparator;
-@property (nonatomic, copy) NSString* interpolationPrefix;
-@property (nonatomic, copy) NSString* interpolationSuffix;
-@property (nonatomic, copy) NSString* pluralSuffix;
-
-@property (nonatomic, strong) I18NextPlurals* plurals;
-
-+ (instancetype)sharedInstance;
-+ (void)setSharedInstance:(I18Next*)instance;
-
-+ (NSString*)t:(id)key;
-
-- (void)setNamespace:(NSString*)ns;
-- (void)setFallbackNamespace:(NSString*)fallbackNS;
-
-- (void)load;
-
-- (BOOL)exists:(NSString*)key;
+@optional
 
 - (NSString*)t:(id)key;
 - (NSString*)t:(id)key count:(NSUInteger)count;
@@ -89,5 +65,44 @@ extern NSString* const kI18NextPluralSuffix;
   defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
      variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+
+@end
+
+@class I18NextPlurals;
+
+@interface I18Next : NSObject<I18NextDynamicInterface>
+
+@property (nonatomic, copy) NSString* lang;
+@property (nonatomic, assign) BOOL lowercaseLang;
+@property (nonatomic, assign) I18NextLangLoadType langLoadType;
+@property (nonatomic, copy) NSString* fallbackLang;
+@property (nonatomic, copy) NSArray* namespaces;
+@property (nonatomic, copy) NSString* defaultNamespace;
+@property (nonatomic, assign) BOOL fallbackToDefaultNamespace;
+@property (nonatomic, copy) NSArray* fallbackNamespaces;
+@property (nonatomic, assign) BOOL fallbackOnNull;
+@property (nonatomic, assign) BOOL returnObjectTrees;
+@property (nonatomic, copy) NSDictionary* resourcesStore;
+@property (nonatomic, copy) NSString* namespaceSeparator;
+@property (nonatomic, copy) NSString* keySeparator;
+@property (nonatomic, copy) NSString* interpolationPrefix;
+@property (nonatomic, copy) NSString* interpolationSuffix;
+@property (nonatomic, copy) NSString* pluralSuffix;
+
+@property (nonatomic, strong) I18NextPlurals* plurals;
+
++ (instancetype)sharedInstance;
++ (void)setSharedInstance:(I18Next*)instance;
+
++ (NSString*)t:(id)key;
+
+- (void)setNamespace:(NSString*)ns;
+- (void)setFallbackNamespace:(NSString*)fallbackNS;
+
+- (void)load;
+
+- (BOOL)exists:(NSString*)key;
+
+- (NSString*)t:(id)key options:(NSDictionary*)options;
 
 @end
