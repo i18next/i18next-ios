@@ -16,6 +16,7 @@ typedef enum {
 
 extern NSString* const kI18NextPluralSuffix;
 
+extern NSString* const kI18NextTranslateOptionLang;
 extern NSString* const kI18NextTranslateOptionNamespace;
 extern NSString* const kI18NextTranslateOptionContext;
 extern NSString* const kI18NextTranslateOptionCount;
@@ -28,42 +29,80 @@ extern NSString* const kI18NextTranslateOptionDefaultValue;
 @optional
 
 - (NSString*)t:(id)key;
-- (NSString*)t:(id)key count:(NSUInteger)count;
 - (NSString*)t:(id)key defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang;
+- (NSString*)t:(id)key lang:(NSString*)lang defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key count:(NSUInteger)count;
+- (NSString*)t:(id)key lang:(NSString*)lang count:(NSUInteger)count;
 - (NSString*)t:(id)key count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context;
 - (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context count:(NSUInteger)count;
 - (NSString*)t:(id)key context:(NSString*)context defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key count:(NSUInteger)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang count:(NSUInteger)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables
   defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang context:(NSString*)context count:(NSUInteger)count variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns;
 - (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns count:(NSUInteger)count;
 - (NSString*)t:(id)key namespace:(NSString*)ns defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns count:(NSUInteger)count defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+  defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
   defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables
   defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns count:(NSUInteger)count variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+     variables:(NSDictionary*)variables;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
      variables:(NSDictionary*)variables;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables
   defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context variables:(NSDictionary*)variables
+  defaultValue:(NSString*)defaultValue;
 - (NSString*)t:(id)key namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
+     variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
+- (NSString*)t:(id)key lang:(NSString*)lang namespace:(NSString*)ns context:(NSString*)context count:(NSUInteger)count
      variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue;
 
 @end

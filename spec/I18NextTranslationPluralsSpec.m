@@ -190,6 +190,34 @@ describe(@"I18Next translation plural usage", ^{
         
     });
     
+    describe(@"extended usage - ask for a key in a language with a different plural form", ^{
+        
+        beforeEach(^{
+            i18n.lang = @"zh";
+            i18n.resourcesStore =
+            @{
+              @"en": @{ @"translation": @{
+                                @"key": @"singular_en",
+                                @"key_plural": @"plural_en",
+                                }
+                        },
+              @"zh": @{ @"translation": @{
+                                @"key": @"singular_zh",
+                                }
+                        },
+              };
+        });
+        
+        it(@"should provide translation for passed in language with 1 item", ^{
+            expect([i18n t:@"key" lang:@"en" count:1]).to.equal(@"singular_en");
+        });
+        
+        it(@"should provide translation for passed in language with 2 items", ^{
+            expect([i18n t:@"key" lang:@"en" count:2]).to.equal(@"plural_en");
+        });
+        
+    });
+    
 });
 
 SpecEnd

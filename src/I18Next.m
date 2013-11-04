@@ -14,6 +14,7 @@
 
 NSString* const kI18NextPluralSuffix = @"_plural";
 
+NSString* const kI18NextTranslateOptionLang = @"lang";
 NSString* const kI18NextTranslateOptionNamespace = @"namespace";
 NSString* const kI18NextTranslateOptionContext = @"context";
 NSString* const kI18NextTranslateOptionCount = @"count";
@@ -129,17 +130,18 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 }
 
 - (BOOL)exists:(NSString*)key {
-    return !![self translateKey:key namespace:nil context:nil count:nil variables:nil defaultValue:nil];
+    return !![self translateKey:key lang:nil namespace:nil context:nil count:nil variables:nil defaultValue:nil];
 }
 
 - (NSString*)t:(id)key options:(NSDictionary*)options {
+    NSString* lang = options[kI18NextTranslateOptionLang];
     NSString* namespace = options[kI18NextTranslateOptionNamespace];
     NSString* context = options[kI18NextTranslateOptionContext];
     NSNumber* count = options[kI18NextTranslateOptionCount];
     NSDictionary* variables = options[kI18NextTranslateOptionVariables];
     NSString* defaultValue = options[kI18NextTranslateOptionDefaultValue];
     
-    return [self translate:key namespace:namespace context:context count:count variables:variables
+    return [self translate:key lang:lang namespace:namespace context:context count:count variables:variables
               defaultValue:defaultValue];
 }
 
@@ -177,8 +179,8 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     return languages;
 }
 
-- (NSString*)translate:(id)key namespace:(NSString*)namespace context:(NSString*)context count:(NSNumber*)count
-             variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+- (NSString*)translate:(id)key lang:(NSString*)lang namespace:(NSString*)namespace context:(NSString*)context
+                 count:(NSNumber*)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
     NSString* stringKey = nil;
     if ([key isKindOfClass:[NSString class]]) {
         stringKey = key;
@@ -187,7 +189,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         for (id potentialKey in key) {
             if ([potentialKey isKindOfClass:[NSString class]]) {
                 stringKey = potentialKey;
-                NSString* value = [self translateKey:potentialKey namespace:namespace context:context count:count
+                NSString* value = [self translateKey:potentialKey lang:lang namespace:namespace context:context count:count
                                            variables:variables defaultValue:defaultValue];
                 if (value) {
                     return value;
@@ -196,12 +198,13 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         }
     }
     
-    return [self translateKey:stringKey namespace:namespace context:context count:count
+    return [self translateKey:stringKey lang:lang namespace:namespace context:context count:count
                     variables:variables defaultValue:defaultValue ?: stringKey];
 }
 
-- (NSString*)translateKey:(NSString*)stringKey namespace:(NSString*)namespace context:(NSString*)context
-                    count:(NSNumber*)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+- (NSString*)translateKey:(NSString*)stringKey lang:(NSString*)lang namespace:(NSString*)namespace
+                  context:(NSString*)context count:(NSNumber*)count variables:(NSDictionary*)variables
+             defaultValue:(NSString*)defaultValue {
     NSString* ns = namespace.length ? namespace : self.defaultNamespace;
     NSRange nsRange = [stringKey rangeOfString:self.namespaceSeparator];
     if (nsRange.location != NSNotFound) {
@@ -225,7 +228,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         NSUInteger countInt = count.unsignedIntegerValue;
         if (countInt != 1) {
             NSString* pluralKey = [stringKey stringByAppendingString:self.pluralSuffix];
-            NSInteger pluralNumber = [self.plurals numberForLang:self.lang count:countInt];
+            NSInteger pluralNumber = [self.plurals numberForLang:(lang.length ? lang : self.lang) count:countInt];
             if (pluralNumber >= 0) {
                 pluralKey = [pluralKey stringByAppendingFormat:@"_%d", pluralNumber];
             }
@@ -233,7 +236,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 //                pluralKey = stringKey;
 //            }
             
-            NSString* value = [self translateKey:pluralKey namespace:ns context:nil count:nil
+            NSString* value = [self translateKey:pluralKey lang:lang namespace:ns context:nil count:nil
                                        variables:variablesWithCount defaultValue:nil];
             if (value) {
                 return value;
@@ -242,15 +245,15 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         }
     }
     
-    return [self find:stringKey namespace:ns fallbackNamespaces:fallbackNamespaces variables:variablesWithCount
+    return [self find:stringKey lang:lang namespace:ns fallbackNamespaces:fallbackNamespaces variables:variablesWithCount
          defaultValue:defaultValue];
 }
 
-- (NSString*)find:(NSString*)key namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
+- (NSString*)find:(NSString*)key lang:(NSString*)lng namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
         variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
     id result = nil;
     
-    for (id lang in [self languagesForLang:self.lang]) {
+    for (id lang in [self languagesForLang:lng.length ? lng : self.lang]) {
         if (![lang isKindOfClass:[NSString class]]) {
             continue;
         }
@@ -272,6 +275,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
                     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:((NSDictionary*)value).count];
                     for (id childKey in value) {
                         dict[childKey] = [self translate:[NSString stringWithFormat:@"%@%@%@", key, self.keySeparator, childKey]
+                                                    lang:lang
                                                namespace:ns context:nil count:nil variables:variables defaultValue:nil];
                     }
                     value = dict.copy;
@@ -285,7 +289,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     // Not found, fallback?
     if (!result && fallbackNamespaces.count) {
         for (NSString* fallbackNS in fallbackNamespaces) {
-            id value = [self find:key namespace:fallbackNS fallbackNamespaces:nil variables:variables
+            id value = [self find:key lang:lng namespace:fallbackNS fallbackNamespaces:nil variables:variables
                      defaultValue:nil];
             if (value) {
                 return value;
