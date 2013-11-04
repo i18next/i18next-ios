@@ -20,6 +20,7 @@ NSString* const kI18NextTranslateOptionContext = @"context";
 NSString* const kI18NextTranslateOptionCount = @"count";
 NSString* const kI18NextTranslateOptionVariables = @"variables";
 NSString* const kI18NextTranslateOptionDefaultValue = @"defaultValue";
+NSString* const kI18NextTranslateOptionSprintf = @"sprintf";
 
 static I18Next* gSharedInstance = nil;
 static dispatch_once_t gOnceToken;
@@ -130,7 +131,19 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 }
 
 - (BOOL)exists:(NSString*)key {
-    return !![self translateKey:key lang:nil namespace:nil context:nil count:nil variables:nil defaultValue:nil];
+    return !![self translateKey:key lang:nil namespace:nil context:nil count:nil variables:nil sprintf:nil defaultValue:nil];
+}
+
+- (NSString*)t:(id)key, ... {
+    va_list arglist;
+    va_start(arglist, key);
+    NSString* result = [self t:key options:@{ kI18NextTranslateOptionSprintf: [I18NextSprintfArgs formatBlock:^NSString *(NSString *format) {
+        return [I18NextSprintf vsprintf:format arguments:arglist];
+    }]
+                                              }];
+    va_end(arglist);
+    
+    return result;
 }
 
 - (NSString*)t:(id)key options:(NSDictionary*)options {
@@ -140,8 +153,9 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     NSNumber* count = options[kI18NextTranslateOptionCount];
     NSDictionary* variables = options[kI18NextTranslateOptionVariables];
     NSString* defaultValue = options[kI18NextTranslateOptionDefaultValue];
+    I18NextSprintfArgs* sprintfArgs = options[kI18NextTranslateOptionSprintf];
     
-    return [self translate:key lang:lang namespace:namespace context:context count:count variables:variables
+    return [self translate:key lang:lang namespace:namespace context:context count:count variables:variables sprintf:sprintfArgs
               defaultValue:defaultValue];
 }
 
@@ -180,7 +194,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 }
 
 - (NSString*)translate:(id)key lang:(NSString*)lang namespace:(NSString*)namespace context:(NSString*)context
-                 count:(NSNumber*)count variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+                 count:(NSNumber*)count variables:(NSDictionary*)variables sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
     NSString* stringKey = nil;
     if ([key isKindOfClass:[NSString class]]) {
         stringKey = key;
@@ -190,7 +204,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
             if ([potentialKey isKindOfClass:[NSString class]]) {
                 stringKey = potentialKey;
                 NSString* value = [self translateKey:potentialKey lang:lang namespace:namespace context:context count:count
-                                           variables:variables defaultValue:defaultValue];
+                                           variables:variables sprintf:sprintf defaultValue:defaultValue];
                 if (value) {
                     return value;
                 }
@@ -199,12 +213,12 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     }
     
     return [self translateKey:stringKey lang:lang namespace:namespace context:context count:count
-                    variables:variables defaultValue:defaultValue ?: stringKey];
+                    variables:variables sprintf:sprintf defaultValue:defaultValue ?: stringKey];
 }
 
 - (NSString*)translateKey:(NSString*)stringKey lang:(NSString*)lang namespace:(NSString*)namespace
                   context:(NSString*)context count:(NSNumber*)count variables:(NSDictionary*)variables
-             defaultValue:(NSString*)defaultValue {
+                  sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
     NSString* ns = namespace.length ? namespace : self.defaultNamespace;
     NSRange nsRange = [stringKey rangeOfString:self.namespaceSeparator];
     if (nsRange.location != NSNotFound) {
@@ -237,7 +251,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 //            }
             
             NSString* value = [self translateKey:pluralKey lang:lang namespace:ns context:nil count:nil
-                                       variables:variablesWithCount defaultValue:nil];
+                                       variables:variablesWithCount sprintf:sprintf defaultValue:nil];
             if (value) {
                 return value;
             }
@@ -246,11 +260,11 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     }
     
     return [self find:stringKey lang:lang namespace:ns fallbackNamespaces:fallbackNamespaces variables:variablesWithCount
-         defaultValue:defaultValue];
+              sprintf:sprintf defaultValue:defaultValue];
 }
 
 - (NSString*)find:(NSString*)key lang:(NSString*)lng namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces
-        variables:(NSDictionary*)variables defaultValue:(NSString*)defaultValue {
+        variables:(NSDictionary*)variables sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
     id result = nil;
     
     for (id lang in [self languagesForLang:lng.length ? lng : self.lang]) {
@@ -276,7 +290,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
                     for (id childKey in value) {
                         dict[childKey] = [self translate:[NSString stringWithFormat:@"%@%@%@", key, self.keySeparator, childKey]
                                                     lang:lang
-                                               namespace:ns context:nil count:nil variables:variables defaultValue:nil];
+                                               namespace:ns context:nil count:nil variables:variables sprintf:sprintf defaultValue:nil];
                     }
                     value = dict.copy;
                 }
@@ -290,7 +304,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     if (!result && fallbackNamespaces.count) {
         for (NSString* fallbackNS in fallbackNamespaces) {
             id value = [self find:key lang:lng namespace:fallbackNS fallbackNamespaces:nil variables:variables
-                     defaultValue:nil];
+                          sprintf:sprintf defaultValue:nil];
             if (value) {
                 return value;
             }
@@ -306,9 +320,39 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
                                      interpolationPrefix:self.interpolationPrefix
                                      interpolationSuffix:self.interpolationSuffix
                                             keySeparator:self.keySeparator];
+        
+        if(sprintf.formatBlock) {
+            result = sprintf.formatBlock(result);
+        }
     }
     
     return result;
+}
+
+@end
+
+@implementation I18NextSprintfArgs
+
++ (instancetype)formatBlock:(NSString* (^)(NSString* format))formatBlock {
+    I18NextSprintfArgs* args = [I18NextSprintfArgs new];
+    args.formatBlock = formatBlock;
+    return args;
+}
+
+@end
+
+@implementation I18NextSprintf
+
++ (NSString*)sprintf:(NSString*)format, ... {
+    va_list argList;
+    va_start(argList, format);
+    NSString* result = [[NSString alloc] initWithFormat:format arguments:argList];
+    va_end(argList);
+    return result;
+}
+
++ (NSString*)vsprintf:(NSString*)format arguments:(va_list)argList {
+    return [[NSString alloc] initWithFormat:format arguments:argList];
 }
 
 @end

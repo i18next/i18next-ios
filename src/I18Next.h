@@ -22,6 +22,7 @@ extern NSString* const kI18NextTranslateOptionContext;
 extern NSString* const kI18NextTranslateOptionCount;
 extern NSString* const kI18NextTranslateOptionVariables;
 extern NSString* const kI18NextTranslateOptionDefaultValue;
+extern NSString* const kI18NextTranslateOptionSprintf;
 
 // Helper methods that end up using `t:options:`
 @protocol I18NextDynamicInterface <NSObject>
@@ -142,6 +143,27 @@ extern NSString* const kI18NextTranslateOptionDefaultValue;
 
 - (BOOL)exists:(NSString*)key;
 
+- (NSString*)t:(id)key, ...;
 - (NSString*)t:(id)key options:(NSDictionary*)options;
+
+@end
+
+#define I18NEXT_SPRINTF_ARGS(...) \
+    [I18NextSprintfArgs formatBlock:^(NSString* format) { \
+    return [I18NextSprintf sprintf:format, ##__VA_ARGS__]; \
+    }]
+
+@interface I18NextSprintfArgs : NSObject
+
+@property (nonatomic, copy) NSString* (^formatBlock)(NSString* format);
+
++ (instancetype)formatBlock:(NSString* (^)(NSString* format))formatBlock;
+
+@end
+
+@interface I18NextSprintf : NSObject
+
++ (NSString*)sprintf:(NSString*)format, ...;
++ (NSString*)vsprintf:(NSString*)format arguments:(va_list)argList;
 
 @end
