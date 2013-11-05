@@ -19,6 +19,7 @@ SpecBegin(I18Next)
 
 describe(@"I18Next", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     __block NSDictionary* testStore =
     @{
       @"dev": @{ @"translation": @{ @"simple_dev": @"ok_from_dev" } },
@@ -36,6 +37,7 @@ describe(@"I18Next", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -53,7 +55,8 @@ describe(@"I18Next", ^{
         describe(@"with passed in resources set", ^{
             
             beforeEach(^{
-                i18n.resourcesStore = testStore;
+                options.resourcesStore = testStore;
+                [i18n loadWithOptions:options.asDictionary completion:nil];
             });
             
             it(@"should provide passed resources for translation", ^{

@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationObjectValue)
 
 describe(@"I18Next translation", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next translation", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -39,7 +41,7 @@ describe(@"I18Next translation", ^{
     describe(@"resource string is null", ^{
         
         beforeEach(^{
-            i18n.resourcesStore =
+            options.resourcesStore =
             @{
               @"dev": @{ @"translation": @{ } },
               @"en": @{ @"translation": @{ } },
@@ -47,6 +49,7 @@ describe(@"I18Next translation", ^{
                                    @"test": @{ @"simple_en-US": @"ok_from_en-US" }
                                 } },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should return nested string as usual", ^{
@@ -60,7 +63,7 @@ describe(@"I18Next translation", ^{
         describe(@"optional return an objectTree for UI components", ^{
             
             beforeEach(^{
-                i18n.resourcesStore =
+                options.resourcesStore =
                 @{
                   @"dev": @{ @"translation": @{
                                      @"test_dev": @{ @"res_dev": @"added __replace__" }
@@ -72,7 +75,8 @@ describe(@"I18Next translation", ^{
                                        }
                                },
                   };
-                i18n.returnObjectTrees = YES;
+                options.returnObjectTrees = YES;
+                [i18n loadWithOptions:options.asDictionary completion:nil];
             });
             
             it(@"should return objectTree applying options", ^{

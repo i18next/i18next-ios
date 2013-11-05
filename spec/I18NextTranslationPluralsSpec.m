@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationPlurals)
 
 describe(@"I18Next translation plural usage", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next translation plural usage", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -39,7 +41,7 @@ describe(@"I18Next translation plural usage", ^{
     describe(@"basic usage - singular and plural form", ^{
         
         beforeEach(^{
-            i18n.resourcesStore =
+            options.resourcesStore =
             @{
               @"dev": @{ @"ns.2": @{
                                  @"pluralTest": @"singular from ns.2",
@@ -57,8 +59,9 @@ describe(@"I18Next translation plural usage", ^{
                                    }
                            },
               };
-            i18n.namespaces = @[ @"ns.1", @"ns.2" ];
-            i18n.defaultNamespace = @"ns.1";
+            options.namespaces = @[ @"ns.1", @"ns.2" ];
+            options.defaultNamespace = @"ns.1";
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should provide correct plural or singular form", ^{
@@ -87,8 +90,8 @@ describe(@"I18Next translation plural usage", ^{
     describe(@"basic usage 2 - singular and plural form in french", ^{
         
         beforeEach(^{
-            i18n.lang = @"fr";
-            i18n.resourcesStore =
+            options.lang = @"fr";
+            options.resourcesStore =
             @{
               @"dev": @{ @"ns.2": @{
                                  @"pluralTest": @"singular from ns.2",
@@ -106,8 +109,9 @@ describe(@"I18Next translation plural usage", ^{
                                    }
                            },
               };
-            i18n.namespaces = @[ @"ns.1", @"ns.2" ];
-            i18n.defaultNamespace = @"ns.1";
+            options.namespaces = @[ @"ns.1", @"ns.2" ];
+            options.defaultNamespace = @"ns.1";
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should provide correct plural or singular form", ^{
@@ -126,8 +130,8 @@ describe(@"I18Next translation plural usage", ^{
     describe(@"extended usage - multiple plural forms - ar", ^{
         
         beforeEach(^{
-            i18n.lang = @"ar";
-            i18n.resourcesStore =
+            options.lang = @"ar";
+            options.resourcesStore =
             @{
               @"dev": @{ @"translation": @{ } },
               @"ar": @{ @"translation": @{
@@ -141,6 +145,7 @@ describe(@"I18Next translation plural usage", ^{
                         },
               @"ar-??": @{ @"translation": @{ } },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should provide correct plural or singular form", ^{
@@ -161,8 +166,8 @@ describe(@"I18Next translation plural usage", ^{
     describe(@"extended usage - multiple plural forms - ru", ^{
         
         beforeEach(^{
-            i18n.lang = @"ru";
-            i18n.resourcesStore =
+            options.lang = @"ru";
+            options.resourcesStore =
             @{
               @"dev": @{ @"translation": @{ } },
               @"ru": @{ @"translation": @{
@@ -173,6 +178,7 @@ describe(@"I18Next translation plural usage", ^{
                         },
               @"ru-??": @{ @"translation": @{ } },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should provide correct plural or singular form", ^{
@@ -193,8 +199,8 @@ describe(@"I18Next translation plural usage", ^{
     describe(@"extended usage - ask for a key in a language with a different plural form", ^{
         
         beforeEach(^{
-            i18n.lang = @"zh";
-            i18n.resourcesStore =
+            options.lang = @"zh";
+            options.resourcesStore =
             @{
               @"en": @{ @"translation": @{
                                 @"key": @"singular_en",
@@ -206,6 +212,7 @@ describe(@"I18Next translation plural usage", ^{
                                 }
                         },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should provide translation for passed in language with 1 item", ^{

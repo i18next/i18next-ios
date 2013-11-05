@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationDefaultValue)
 
 describe(@"I18Next", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -41,12 +43,13 @@ describe(@"I18Next", ^{
             describe(@"default value", ^{
                 
                 beforeEach(^{
-                    i18n.resourcesStore =
+                    options.resourcesStore =
                     @{
                       @"dev": @{ @"translation": @{ } },
                       @"en": @{ @"translation": @{ } },
                       @"en-US": @{ @"translation": @{ @"test": @"hi" } },
                       };
+                    [i18n loadWithOptions:options.asDictionary completion:nil];
                 });
                 
                 it(@"should return the default value when key is not found", ^{

@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationSprintf)
 
 describe(@"I18Next translation", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next translation", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -39,7 +41,7 @@ describe(@"I18Next translation", ^{
     describe(@"using sprintf", ^{
         
         beforeEach(^{
-            i18n.resourcesStore =
+            options.resourcesStore =
             @{
               @"dev": @{ @"translation": @{ } },
               @"en": @{ @"translation": @{ } },
@@ -49,6 +51,7 @@ describe(@"I18Next translation", ^{
                                    @"interpolationTest3": @"These are mixed strings and decimals: %@, %f, %.2f"
                                    } },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should replace passed in key/values", ^{

@@ -19,6 +19,7 @@ SpecBegin(I18NextNamespace)
 
 describe(@"I18Next", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -43,13 +45,14 @@ describe(@"I18Next", ^{
             describe(@"with one namespace set", ^{
                 
                 beforeEach(^{
-                    i18n.resourcesStore =
+                    options.resourcesStore =
                     @{
                       @"dev": @{ @"ns.special": @{ @"simple_dev": @"ok_from_special_dev" } },
                       @"en": @{ @"ns.special": @{ @"simple_en": @"ok_from_special_en" } },
                       @"en-US": @{ @"ns.special": @{ @"simple_en-US": @"ok_from_special_en-US" } },
                       };
-                    i18n.namespace = @"ns.special";
+                    options.namespace = @"ns.special";
+                    [i18n loadWithOptions:options.asDictionary completion:nil];
                 });
                 
                 it(@"should provide passed resources for translation", ^{
@@ -63,7 +66,7 @@ describe(@"I18Next", ^{
             describe(@"with more than one namespace set", ^{
                 
                 beforeEach(^{
-                    i18n.resourcesStore =
+                    options.resourcesStore =
                     @{
                       @"dev": @{
                               @"ns.common": @{ @"simple_dev": @"ok_from_common_dev" },
@@ -78,8 +81,9 @@ describe(@"I18Next", ^{
                               @"ns.special": @{ @"simple_en-US": @"ok_from_special_en-US" }
                               },
                       };
-                    i18n.namespaces = @[@"ns.common", @"ns.special"];
-                    i18n.defaultNamespace = @"ns.special";
+                    options.namespaces = @[@"ns.common", @"ns.special"];
+                    options.defaultNamespace = @"ns.special";
+                    [i18n loadWithOptions:options.asDictionary completion:nil];
                 });
                 
                 it(@"should provide passed resources for translation", ^{
@@ -102,15 +106,16 @@ describe(@"I18Next", ^{
                 describe(@"and fallbacking to default namespace", ^{
                     
                     beforeEach(^{
-                        i18n.resourcesStore =
+                        options.resourcesStore =
                         @{
                           @"dev": @{ @"ns.special": @{ @"simple_dev": @"ok_from_dev" } },
                           @"en": @{ @"ns.special": @{ @"simple_en": @"ok_from_en" } },
                           @"en-US": @{ @"ns.special": @{ @"simple_en-US": @"ok_from_en-US" } },
                           };
-                        i18n.namespaces = @[@"ns.common", @"ns.special"];
-                        i18n.defaultNamespace = @"ns.special";
-                        i18n.fallbackToDefaultNamespace = YES;
+                        options.namespaces = @[@"ns.common", @"ns.special"];
+                        options.defaultNamespace = @"ns.special";
+                        options.fallbackToDefaultNamespace = YES;
+                        [i18n loadWithOptions:options.asDictionary completion:nil];
                     });
                     
                     it(@"should fallback to default ns", ^{
@@ -124,7 +129,7 @@ describe(@"I18Next", ^{
                 describe(@"and fallbacking to set namespace", ^{
                     
                     beforeEach(^{
-                        i18n.resourcesStore =
+                        options.resourcesStore =
                         @{
                           @"dev": @{
                                   @"ns.special": @{ @"simple_dev": @"ok_from_dev" },
@@ -133,9 +138,10 @@ describe(@"I18Next", ^{
                           @"en": @{ @"ns.special": @{ @"simple_en": @"ok_from_en" } },
                           @"en-US": @{ @"ns.special": @{ @"simple_en-US": @"ok_from_en-US" } },
                           };
-                        i18n.namespaces = @[@"ns.common", @"ns.special", @"ns.fallback"];
-                        i18n.defaultNamespace = @"ns.special";
-                        i18n.fallbackNamespace = @"ns.fallback";
+                        options.namespaces = @[@"ns.common", @"ns.special", @"ns.fallback"];
+                        options.defaultNamespace = @"ns.special";
+                        options.fallbackNamespace = @"ns.fallback";
+                        [i18n loadWithOptions:options.asDictionary completion:nil];
                     });
                     
                     it(@"should fallback to set fallback namespace", ^{
@@ -147,7 +153,7 @@ describe(@"I18Next", ^{
                 describe(@"and fallbacking to multiple set namespace", ^{
                     
                     beforeEach(^{
-                        i18n.resourcesStore =
+                        options.resourcesStore =
                         @{
                           @"dev": @{
                                   @"ns.common": @{},
@@ -166,9 +172,10 @@ describe(@"I18Next", ^{
                                   },
                           @"en-US": @{ @"ns.special": @{ @"simple_en-US": @"ok_from_en-US" } },
                           };
-                        i18n.namespaces = @[@"ns.common", @"ns.special", @"ns.fallback"];
-                        i18n.defaultNamespace = @"ns.special";
-                        i18n.fallbackNamespaces = @[@"ns.fallback1", @"ns.fallback2"];
+                        options.namespaces = @[@"ns.common", @"ns.special", @"ns.fallback"];
+                        options.defaultNamespace = @"ns.special";
+                        options.fallbackNamespaces = @[@"ns.fallback1", @"ns.fallback2"];
+                        [i18n loadWithOptions:options.asDictionary completion:nil];
                     });
                     
                     it(@"should fallback to set fallback namespace", ^{

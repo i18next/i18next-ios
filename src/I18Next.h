@@ -14,10 +14,27 @@ typedef enum {
 	I18NextLangLoadTypeUnspecific // Load unspecific lang (example: 'en')
 } I18NextLangLoadType;
 
+extern NSString* const kI18NextOptionLowercaseLang;
+extern NSString* const kI18NextOptionLangLoadType;
+extern NSString* const kI18NextOptionFallbackLang;
+extern NSString* const kI18NextOptionNamespace;
+extern NSString* const kI18NextOptionNamespaces;
+extern NSString* const kI18NextOptionDefaultNamespace;
+extern NSString* const kI18NextOptionFallbackToDefaultNamespace;
+extern NSString* const kI18NextOptionFallbackNamespaces;
+extern NSString* const kI18NextOptionFallbackOnNull;
+extern NSString* const kI18NextOptionReturnObjectTrees;
+extern NSString* const kI18NextOptionResourcesStore;
+extern NSString* const kI18NextOptionNamespaceSeparator;
+extern NSString* const kI18NextOptionKeySeparator;
+extern NSString* const kI18NextOptionInterpolationPrefix;
+extern NSString* const kI18NextOptionInterpolationSuffix;
+extern NSString* const kI18NextOptionPluralSuffix;
+
+extern NSString* const kI18NextNamespaceSeparator;
+extern NSString* const kI18NextDefaultNamespace;
 extern NSString* const kI18NextPluralSuffix;
 
-extern NSString* const kI18NextTranslateOptionLang;
-extern NSString* const kI18NextTranslateOptionNamespace;
 extern NSString* const kI18NextTranslateOptionContext;
 extern NSString* const kI18NextTranslateOptionCount;
 extern NSString* const kI18NextTranslateOptionVariables;
@@ -113,6 +130,28 @@ extern NSString* const kI18NextTranslateOptionSprintf;
 @interface I18Next : NSObject<I18NextDynamicInterface>
 
 @property (nonatomic, copy) NSString* lang;
+@property (nonatomic, copy, readonly) NSDictionary* options;
+
+@property (nonatomic, strong) I18NextPlurals* plurals;
+
++ (instancetype)sharedInstance;
++ (void)setSharedInstance:(I18Next*)instance;
+
++ (NSString*)t:(id)key;
+
+- (void)loadWithOptions:(NSDictionary*)options completion:(void (^)(NSError* error))completionBlock;
+
+- (BOOL)exists:(NSString*)key;
+
+- (NSString*)t:(id)key, ...;
+- (NSString*)t:(id)key options:(NSDictionary*)options;
+
+@end
+
+// Helper to deal with options
+@interface I18NextOptions : NSObject
+
+@property (nonatomic, copy) NSString* lang;
 @property (nonatomic, assign) BOOL lowercaseLang;
 @property (nonatomic, assign) I18NextLangLoadType langLoadType;
 @property (nonatomic, copy) NSString* fallbackLang;
@@ -129,22 +168,12 @@ extern NSString* const kI18NextTranslateOptionSprintf;
 @property (nonatomic, copy) NSString* interpolationSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
 
-@property (nonatomic, strong) I18NextPlurals* plurals;
-
-+ (instancetype)sharedInstance;
-+ (void)setSharedInstance:(I18Next*)instance;
-
-+ (NSString*)t:(id)key;
++ (instancetype)optionsFromDict:(NSDictionary*)dict;
 
 - (void)setNamespace:(NSString*)ns;
 - (void)setFallbackNamespace:(NSString*)fallbackNS;
 
-- (void)load;
-
-- (BOOL)exists:(NSString*)key;
-
-- (NSString*)t:(id)key, ...;
-- (NSString*)t:(id)key options:(NSDictionary*)options;
+- (NSDictionary*)asDictionary;
 
 @end
 

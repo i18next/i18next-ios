@@ -12,10 +12,28 @@
 #import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
+NSString* const kI18NextOptionLang = @"lang";
+NSString* const kI18NextOptionLowercaseLang = @"lowercaseLang";
+NSString* const kI18NextOptionLangLoadType = @"langLoadType";
+NSString* const kI18NextOptionFallbackLang = @"fallbackLang";
+NSString* const kI18NextOptionNamespace = @"namespace";
+NSString* const kI18NextOptionNamespaces = @"namespaces";
+NSString* const kI18NextOptionDefaultNamespace = @"defaultNamespace";
+NSString* const kI18NextOptionFallbackToDefaultNamespace = @"fallbackToDefaultNamespace";
+NSString* const kI18NextOptionFallbackNamespaces = @"fallbackNamespaces";
+NSString* const kI18NextOptionFallbackOnNull = @"fallbackOnNull";
+NSString* const kI18NextOptionReturnObjectTrees = @"returnObjectTrees";
+NSString* const kI18NextOptionResourcesStore = @"resourcesStore";
+NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
+NSString* const kI18NextOptionKeySeparator = @"keySeparator";
+NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
+NSString* const kI18NextOptionInterpolationSuffix = @"interpolationSuffix";
+NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
+
+NSString* const kI18NextNamespaceSeparator = @":";
+NSString* const kI18NextDefaultNamespace = @"translation";
 NSString* const kI18NextPluralSuffix = @"_plural";
 
-NSString* const kI18NextTranslateOptionLang = @"lang";
-NSString* const kI18NextTranslateOptionNamespace = @"namespace";
 NSString* const kI18NextTranslateOptionContext = @"context";
 NSString* const kI18NextTranslateOptionCount = @"count";
 NSString* const kI18NextTranslateOptionVariables = @"variables";
@@ -25,7 +43,16 @@ NSString* const kI18NextTranslateOptionSprintf = @"sprintf";
 static I18Next* gSharedInstance = nil;
 static dispatch_once_t gOnceToken;
 
+@interface I18Next ()
+
+@property (nonatomic, copy, readwrite) NSDictionary* options;
+@property (nonatomic, copy) NSDictionary* resourcesStore;
+
+@end
+
 @implementation I18Next
+
+@dynamic lang;
 
 static NSString* genericTranslate(id self, SEL _cmd, ...) {
     va_list arglist;
@@ -103,31 +130,50 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.fallbackLang = @"dev";
-        self.fallbackOnNull = YES;
-        self.namespace = @"translation";
-        self.namespaceSeparator = @":";
-        self.keySeparator = kI18NextKeySeparator;
-        self.interpolationPrefix = kI18NextInterpolationPrefix;
-        self.interpolationSuffix = kI18NextInterpolationSuffix;
-        self.pluralSuffix = kI18NextPluralSuffix;
+        self.options = [self defaultOptions];
         
         self.plurals = [I18NextPlurals sharedInstance];
     }
     return self;
 }
 
-- (void)setNamespace:(NSString*)ns {
-    self.namespaces = @[ns];
-    self.defaultNamespace = ns;
+- (NSString*)lang {
+    return self.options[kI18NextOptionLang];
 }
 
-- (void)setFallbackNamespace:(NSString*)fallbackNS {
-    self.fallbackNamespaces = @[fallbackNS];
+- (void)setLang:(NSString *)lang {
+    NSMutableDictionary* dict = self.options.mutableCopy;
+    dict[kI18NextOptionLang] = lang;
+    self.options = dict.copy;
 }
 
-- (void)load {
+- (NSDictionary*)defaultOptions {
+    I18NextOptions* options = [I18NextOptions new];
     
+    options.fallbackLang = @"dev";
+    options.fallbackOnNull = YES;
+    options.namespace = @"translation";
+    options.namespaceSeparator = @":";
+    options.keySeparator = kI18NextKeySeparator;
+    options.interpolationPrefix = kI18NextInterpolationPrefix;
+    options.interpolationSuffix = kI18NextInterpolationSuffix;
+    options.pluralSuffix = kI18NextPluralSuffix;
+    
+    return options.asDictionary;
+}
+
+- (void)loadWithOptions:(NSDictionary*)options completion:(void (^)(NSError* error))completionBlock {
+    // TODO: sanitize options
+    NSMutableDictionary* dict = self.defaultOptions.mutableCopy;
+    [dict addEntriesFromDictionary:options];
+    
+    self.options = dict;
+    self.resourcesStore = options[kI18NextOptionResourcesStore];
+    
+    // TODO: download resources if necessary
+    if (completionBlock) {
+        completionBlock(nil);
+    }
 }
 
 - (BOOL)exists:(NSString*)key {
@@ -147,8 +193,8 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 }
 
 - (NSString*)t:(id)key options:(NSDictionary*)options {
-    NSString* lang = options[kI18NextTranslateOptionLang];
-    NSString* namespace = options[kI18NextTranslateOptionNamespace];
+    NSString* lang = options[kI18NextOptionLang];
+    NSString* namespace = options[kI18NextOptionNamespace];
     NSString* context = options[kI18NextTranslateOptionContext];
     NSNumber* count = options[kI18NextTranslateOptionCount];
     NSDictionary* variables = options[kI18NextTranslateOptionVariables];
@@ -171,12 +217,14 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
             NSString* languageCode = [lang substringToIndex:dashRange.location].lowercaseString;
             NSString* countryCode = [lang substringFromIndex:dashRange.location + dashRange.length];
             
-            countryCode = self.lowercaseLang ? countryCode.lowercaseString : countryCode.uppercaseString;
+            countryCode = [self.options[kI18NextOptionLowercaseLang] boolValue] ? countryCode.lowercaseString : countryCode.uppercaseString;
             
-            if (self.langLoadType != I18NextLangLoadTypeUnspecific) {
+            I18NextLangLoadType langLoadType = [self.options[kI18NextOptionLangLoadType] integerValue];
+            
+            if (langLoadType != I18NextLangLoadTypeUnspecific) {
                 [languages addObject:[NSString stringWithFormat:@"%@-%@", languageCode, countryCode]];
             }
-            if (self.langLoadType != I18NextLangLoadTypeCurrent) {
+            if (langLoadType != I18NextLangLoadTypeCurrent) {
                 [languages addObject:languageCode];
             }
         }
@@ -185,7 +233,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         }
     }
     
-    NSString* fallbackLang = self.fallbackLang;
+    NSString* fallbackLang = self.options[kI18NextOptionFallbackLang];
     if (fallbackLang.length && [languages indexOfObject:fallbackLang] == NSNotFound) {
         [languages addObject:fallbackLang];
     }
@@ -219,16 +267,16 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 - (NSString*)translateKey:(NSString*)stringKey lang:(NSString*)lang namespace:(NSString*)namespace
                   context:(NSString*)context count:(NSNumber*)count variables:(NSDictionary*)variables
                   sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
-    NSString* ns = namespace.length ? namespace : self.defaultNamespace;
-    NSRange nsRange = [stringKey rangeOfString:self.namespaceSeparator];
+    NSString* ns = namespace.length ? namespace : self.options[kI18NextOptionDefaultNamespace];
+    NSRange nsRange = [stringKey rangeOfString:self.options[kI18NextOptionNamespaceSeparator]];
     if (nsRange.location != NSNotFound) {
         ns = [stringKey substringToIndex:nsRange.location];
         stringKey = [stringKey substringFromIndex:nsRange.location + nsRange.length];
     }
     
-    NSArray* fallbackNamespaces = self.fallbackNamespaces;
-    if (!fallbackNamespaces.count && self.fallbackToDefaultNamespace) {
-        fallbackNamespaces = @[self.defaultNamespace];
+    NSArray* fallbackNamespaces = self.options[kI18NextOptionFallbackNamespaces];
+    if (!fallbackNamespaces.count && [self.options[kI18NextOptionFallbackToDefaultNamespace] boolValue]) {
+        fallbackNamespaces = @[self.options[kI18NextOptionDefaultNamespace]];
     }
     
     if (context.length) {
@@ -241,8 +289,8 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         
         NSUInteger countInt = count.unsignedIntegerValue;
         if (countInt != 1) {
-            NSString* pluralKey = [stringKey stringByAppendingString:self.pluralSuffix];
-            NSInteger pluralNumber = [self.plurals numberForLang:(lang.length ? lang : self.lang) count:countInt];
+            NSString* pluralKey = [stringKey stringByAppendingString:self.options[kI18NextOptionPluralSuffix]];
+            NSInteger pluralNumber = [self.plurals numberForLang:(lang.length ? lang : self.options[kI18NextOptionLang]) count:countInt];
             if (pluralNumber >= 0) {
                 pluralKey = [pluralKey stringByAppendingFormat:@"_%d", pluralNumber];
             }
@@ -272,23 +320,23 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
             continue;
         }
         
-        id value = [self.resourcesStore[lang][ns] i18n_valueForKeyPath:key keySeparator:self.keySeparator];
+        id value = [self.resourcesStore[lang][ns] i18n_valueForKeyPath:key keySeparator:self.options[kI18NextOptionKeySeparator]];
         if (value) {
-            if ([value isKindOfClass:[NSArray class]] && !self.returnObjectTrees) {
+            if ([value isKindOfClass:[NSArray class]] && ![self.options[kI18NextOptionReturnObjectTrees] boolValue]) {
                 value = [value componentsJoinedByString:@"\n"];
             }
-            else if ([value isEqual:[NSNull null]] && self.fallbackOnNull) {
+            else if ([value isEqual:[NSNull null]] && [self.options[kI18NextOptionFallbackOnNull] boolValue]) {
                 continue;
             }
             else if ([value isKindOfClass:[NSDictionary class]]) {
-                if (!self.returnObjectTrees) {
+                if (![self.options[kI18NextOptionReturnObjectTrees] boolValue]) {
                     value = [NSString stringWithFormat:@"key '%@%@%@ (%@)' returned an object instead of a string",
-                             ns, self.namespaceSeparator, key, lang];
+                             ns, self.options[kI18NextOptionNamespaceSeparator], key, lang];
                 }
                 else {
                     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:((NSDictionary*)value).count];
                     for (id childKey in value) {
-                        dict[childKey] = [self translate:[NSString stringWithFormat:@"%@%@%@", key, self.keySeparator, childKey]
+                        dict[childKey] = [self translate:[NSString stringWithFormat:@"%@%@%@", key, self.options[kI18NextOptionKeySeparator], childKey]
                                                     lang:lang
                                                namespace:ns context:nil count:nil variables:variables sprintf:sprintf defaultValue:nil];
                     }
@@ -317,9 +365,9 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     
     if ([result isKindOfClass:[NSString class]]) {
         result = [result i18n_stringByReplacingVariables:variables
-                                     interpolationPrefix:self.interpolationPrefix
-                                     interpolationSuffix:self.interpolationSuffix
-                                            keySeparator:self.keySeparator];
+                                     interpolationPrefix:self.options[kI18NextOptionInterpolationPrefix]
+                                     interpolationSuffix:self.options[kI18NextOptionInterpolationSuffix]
+                                            keySeparator:self.options[kI18NextOptionKeySeparator]];
         
         if(sprintf.formatBlock) {
             result = sprintf.formatBlock(result);
@@ -327,6 +375,44 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     }
     
     return result;
+}
+
+@end
+
+@implementation I18NextOptions
+
++ (instancetype)optionsFromDict:(NSDictionary*)dict {
+    I18NextOptions* options = [self new];
+    [options setValuesForKeysWithDictionary:dict];
+    return options;
+}
+
+- (void)setNamespace:(NSString*)ns {
+    self.namespaces = @[ns];
+    self.defaultNamespace = ns;
+}
+
+- (void)setFallbackNamespace:(NSString*)fallbackNS {
+    self.fallbackNamespaces = @[fallbackNS];
+}
+
+- (NSDictionary*)asDictionary {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    unsigned int count;
+    objc_property_t *properties = class_copyPropertyList([self class], &count);
+    
+    for (int i = 0; i < count; i++) {
+        NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
+        id value = [self valueForKey:key];
+        if (value) {
+            [dict setObject:value forKey:key];
+        }
+    }
+    
+    free(properties);
+    
+    return [NSDictionary dictionaryWithDictionary:dict];
 }
 
 @end

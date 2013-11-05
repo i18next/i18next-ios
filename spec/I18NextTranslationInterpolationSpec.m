@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationInterpolation)
 
 describe(@"I18Next translation interpolation", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next translation interpolation", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -39,7 +41,7 @@ describe(@"I18Next translation interpolation", ^{
     describe(@"default i18next way", ^{
         
         beforeEach(^{
-            i18n.resourcesStore =
+            options.resourcesStore =
             @{
               @"dev": @{ @"translation": @{ } },
               @"en": @{ @"translation": @{ } },
@@ -50,6 +52,7 @@ describe(@"I18Next translation interpolation", ^{
                                    @"interpolationTest4": @"added __child.grandChild.three__",
                                    } },
               };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
         });
         
         it(@"should replace passed in key/values", ^{
@@ -87,7 +90,7 @@ describe(@"I18Next translation interpolation", ^{
         describe(@"with different prefix/suffix via options", ^{
             
             beforeEach(^{
-                i18n.resourcesStore =
+                options.resourcesStore =
                 @{
                   @"dev": @{ @"translation": @{ } },
                   @"en": @{ @"translation": @{ } },
@@ -98,8 +101,9 @@ describe(@"I18Next translation interpolation", ^{
                                        @"interpolationTest4": @"added *child.grandChild.three*",
                                        } },
                   };
-                i18n.interpolationPrefix = @"*";
-                i18n.interpolationSuffix = @"*";
+                options.interpolationPrefix = @"*";
+                options.interpolationSuffix = @"*";
+                [i18n loadWithOptions:options.asDictionary completion:nil];
             });
             
             it(@"should replace passed in key/values", ^{

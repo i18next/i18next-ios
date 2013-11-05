@@ -19,6 +19,7 @@ SpecBegin(I18NextTranslationContext)
 
 describe(@"I18Next", ^{
     __block I18Next* i18n = nil;
+    __block I18NextOptions* options = nil;
     
     beforeAll(^{
         [[LSNocilla sharedInstance] start];
@@ -30,6 +31,7 @@ describe(@"I18Next", ^{
     
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
+        options = [I18NextOptions optionsFromDict:i18n.options];
     });
     
     afterEach(^{
@@ -43,7 +45,7 @@ describe(@"I18Next", ^{
             describe(@"basic usage", ^{
                 
                 beforeEach(^{
-                    i18n.resourcesStore =
+                    options.resourcesStore =
                     @{
                       @"dev": @{ @"ns.2": @{
                                          @"friend_context": @"A friend from ns2",
@@ -59,8 +61,9 @@ describe(@"I18Next", ^{
                                 },
                       @"en-US": @{ @"translation": @{ } },
                       };
-                    i18n.namespaces = @[ @"ns.1", @"ns.2" ];
-                    i18n.defaultNamespace = @"ns.1";
+                    options.namespaces = @[ @"ns.1", @"ns.2" ];
+                    options.defaultNamespace = @"ns.1";
+                    [i18n loadWithOptions:options.asDictionary completion:nil];
                 });
                 
                 it(@"should provide correct context form", ^{
@@ -75,7 +78,7 @@ describe(@"I18Next", ^{
             describe(@"extended usage - in combination with plurals", ^{
                 
                 beforeEach(^{
-                    i18n.resourcesStore =
+                    options.resourcesStore =
                     @{
                       @"dev": @{ },
                       @"en": @{ @"translation": @{
@@ -89,6 +92,7 @@ describe(@"I18Next", ^{
                                 },
                       @"en-US": @{ @"translation": @{ } },
                       };
+                    [i18n loadWithOptions:options.asDictionary completion:nil];
                 });
                 
                 it(@"should provide correct context form", ^{
