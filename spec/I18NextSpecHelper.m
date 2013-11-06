@@ -7,6 +7,19 @@
 //
 
 #import "I18NextSpecHelper.h"
+#import "Nocilla.h"
+
+// Start/stop Nocilla globally
+@interface NocillaSpecHelper : NSObject; @end
+@implementation NocillaSpecHelper
++ (void)beforeEach {
+    [[LSNocilla sharedInstance] start];
+}
++ (void)afterEach {
+	[[LSNocilla sharedInstance] clearStubs];
+    [[LSNocilla sharedInstance] stop];
+}
+@end
 
 I18Next* createDefaultI18NextTestInstance() {
     I18Next* i18n = [I18Next new];

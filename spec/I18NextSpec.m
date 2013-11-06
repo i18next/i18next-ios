@@ -9,7 +9,6 @@
 #import "Specta.h"
 #define EXP_SHORTHAND
 #import "Expecta.h"
-#import "Nocilla.h"
 
 #import "I18Next.h"
 
@@ -27,21 +26,9 @@ describe(@"I18Next", ^{
       @"en-US": @{ @"translation": @{ @"simple_en-US": @"ok_from_en-US" } },
       };
     
-    beforeAll(^{
-        [[LSNocilla sharedInstance] start];
-    });
-    
-    afterAll(^{
-        [[LSNocilla sharedInstance] stop];
-    });
-    
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
         options = [I18NextOptions optionsFromDict:i18n.options];
-    });
-    
-    afterEach(^{
-        [[LSNocilla sharedInstance] clearStubs];
     });
     
     describe(@"initialisation", ^{
