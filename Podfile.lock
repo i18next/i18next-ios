@@ -6,11 +6,16 @@ PODS:
 DEPENDENCIES:
   - Expecta
   - Nocilla
-  - Specta
+  - Specta (from `git@github.com:specta/specta.git`, branch `xctest`)
+
+EXTERNAL SOURCES:
+  Specta:
+    :branch: xctest
+    :git: git@github.com:specta/specta.git
 
 SPEC CHECKSUMS:
   Expecta: dbc4a27fabb853bdd2e907e33f11ee43a9a47d0c
   Nocilla: 79bf72b15b7e6589d3d37ffa7540d7271fb75121
-  Specta: 82746c6fd70b104c5d37cfbadb7bf15a2cbc4da0
+  Specta: ca286a11a17fb4b8839ab50cdcbbe7d7acf33d67
 
 COCOAPODS: 0.27.1
