@@ -27,7 +27,6 @@
 		0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */; };
 		0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */; };
 		0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEF18201D8B00B59924 /* NSString+I18Next.m */; };
-		0FD96A66181ED7230024F886 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FD96A65181ED7230024F886 /* SenTestingKit.framework */; };
 		0FD96A67181ED7240024F886 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD1B181EC0B00008F1C8 /* Foundation.framework */; };
 		0FD96A68181ED7240024F886 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD2C181EC0B00008F1C8 /* UIKit.framework */; };
 		0FD96A77181ED7B40024F886 /* I18NextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */; };
@@ -87,8 +86,7 @@
 		0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationContextSpec.m; sourceTree = "<group>"; };
 		0F923CEE18201D8B00B59924 /* NSString+I18Next.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+I18Next.h"; sourceTree = "<group>"; };
 		0F923CEF18201D8B00B59924 /* NSString+I18Next.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+I18Next.m"; sourceTree = "<group>"; };
-		0FD96A64181ED7230024F886 /* i18nextspec.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i18nextspec.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0FD96A65181ED7230024F886 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		0FD96A64181ED7230024F886 /* i18nextspec.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i18nextspec.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF1D2EC8F35E43ADBB238CB7 /* libPods-i18nextspec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-i18nextspec.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D636370A4AB6406ABB2AD451 /* Pods-i18nextspec.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-i18nextspec.xcconfig"; path = "Pods/Pods-i18nextspec.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,7 +105,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0F70511D181EE847000AC71E /* libi18next.a in Frameworks */,
-				0FD96A66181ED7230024F886 /* SenTestingKit.framework in Frameworks */,
 				0FD96A68181ED7240024F886 /* UIKit.framework in Frameworks */,
 				0FD96A67181ED7240024F886 /* Foundation.framework in Frameworks */,
 				3317C72B8A3C4E37A78A1D00 /* libPods-i18nextspec.a in Frameworks */,
@@ -132,7 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				0F20FD18181EC0B00008F1C8 /* libi18next.a */,
-				0FD96A64181ED7230024F886 /* i18nextspec.octest */,
+				0FD96A64181ED7230024F886 /* i18nextspec.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,7 +141,6 @@
 				0F20FD29181EC0B00008F1C8 /* XCTest.framework */,
 				0F20FD2C181EC0B00008F1C8 /* UIKit.framework */,
 				CF1D2EC8F35E43ADBB238CB7 /* libPods-i18nextspec.a */,
-				0FD96A65181ED7230024F886 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -241,8 +237,8 @@
 			);
 			name = i18nextspec;
 			productName = i18nextspec;
-			productReference = 0FD96A64181ED7230024F886 /* i18nextspec.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 0FD96A64181ED7230024F886 /* i18nextspec.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -477,7 +473,6 @@
 				);
 				INFOPLIST_FILE = "spec/i18nextspec-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -495,7 +490,6 @@
 				GCC_PREFIX_HEADER = "src/i18next-Prefix.pch";
 				INFOPLIST_FILE = "spec/i18nextspec-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
