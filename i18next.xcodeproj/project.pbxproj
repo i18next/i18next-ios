@@ -23,6 +23,7 @@
 		0F30335F1822A5C70066DA20 /* I18NextPlurals.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F30335E1822A5C70066DA20 /* I18NextPlurals.m */; };
 		0F3033611827F76B0066DA20 /* I18NextTranslationSprintfSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F3033601827F76B0066DA20 /* I18NextTranslationSprintfSpec.m */; };
 		0F70511D181EE847000AC71E /* libi18next.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD18181EC0B00008F1C8 /* libi18next.a */; };
+		0F75F0AF182BDBC300052192 /* fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 0F75F0AE182BDBC300052192 /* fixtures */; };
 		0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */; };
 		0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */; };
 		0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */; };
@@ -81,6 +82,7 @@
 		0F30335D1822A5C60066DA20 /* I18NextPlurals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I18NextPlurals.h; sourceTree = "<group>"; };
 		0F30335E1822A5C70066DA20 /* I18NextPlurals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextPlurals.m; sourceTree = "<group>"; };
 		0F3033601827F76B0066DA20 /* I18NextTranslationSprintfSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationSprintfSpec.m; sourceTree = "<group>"; };
+		0F75F0AE182BDBC300052192 /* fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fixtures; sourceTree = "<group>"; };
 		0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextNamespaceSpec.m; sourceTree = "<group>"; };
 		0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationArraySpec.m; sourceTree = "<group>"; };
 		0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationContextSpec.m; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		0F20FD31181EC0B00008F1C8 /* spec */ = {
 			isa = PBXGroup;
 			children = (
+				0F75F0AE182BDBC300052192 /* fixtures */,
 				0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */,
 				0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */,
 				0F30334D182117390066DA20 /* I18NextSpecHelper.h */,
@@ -277,6 +280,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F75F0AF182BDBC300052192 /* fixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
