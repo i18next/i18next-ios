@@ -80,7 +80,7 @@ describe(@"I18Next ", ^{
                     
                 });
                 
-                fdescribe(@"with 1 failed request", ^{
+                describe(@"with 1 failed request", ^{
                     beforeEach(^{
                         stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
                         .andReturn(200)
