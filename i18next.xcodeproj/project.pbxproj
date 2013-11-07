@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F020088182BAC160079D93C /* I18NextConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F020087182BAC160079D93C /* I18NextConnection.m */; };
+		0F0C8167182AC555001A5CED /* I18NextLoadSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F0C8166182AC555001A5CED /* I18NextLoadSpec.m */; };
 		0F20FD1C181EC0B00008F1C8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD1B181EC0B00008F1C8 /* Foundation.framework */; };
 		0F20FD21181EC0B00008F1C8 /* I18Next.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0F20FD20181EC0B00008F1C8 /* I18Next.h */; };
 		0F20FD23181EC0B00008F1C8 /* I18Next.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F20FD22181EC0B00008F1C8 /* I18Next.m */; };
@@ -58,6 +60,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F020086182BAC160079D93C /* I18NextConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I18NextConnection.h; sourceTree = "<group>"; };
+		0F020087182BAC160079D93C /* I18NextConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextConnection.m; sourceTree = "<group>"; };
+		0F0C8166182AC555001A5CED /* I18NextLoadSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextLoadSpec.m; sourceTree = "<group>"; };
 		0F20FD18181EC0B00008F1C8 /* libi18next.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libi18next.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F20FD1B181EC0B00008F1C8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0F20FD1F181EC0B00008F1C8 /* i18next-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "i18next-Prefix.pch"; sourceTree = "<group>"; };
@@ -158,6 +163,8 @@
 				0F303353182143CB0066DA20 /* NSObject+I18Next.m */,
 				0F30335D1822A5C60066DA20 /* I18NextPlurals.h */,
 				0F30335E1822A5C70066DA20 /* I18NextPlurals.m */,
+				0F020086182BAC160079D93C /* I18NextConnection.h */,
+				0F020087182BAC160079D93C /* I18NextConnection.m */,
 				0F20FD1E181EC0B00008F1C8 /* Supporting Files */,
 			);
 			path = src;
@@ -175,6 +182,7 @@
 			isa = PBXGroup;
 			children = (
 				0F75F0AE182BDBC300052192 /* fixtures */,
+				0F0C8166182AC555001A5CED /* I18NextLoadSpec.m */,
 				0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */,
 				0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */,
 				0F30334D182117390066DA20 /* I18NextSpecHelper.h */,
@@ -327,6 +335,7 @@
 				0F303354182143CB0066DA20 /* NSObject+I18Next.m in Sources */,
 				0F20FD23181EC0B00008F1C8 /* I18Next.m in Sources */,
 				0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */,
+				0F020088182BAC160079D93C /* I18NextConnection.m in Sources */,
 				0F30335F1822A5C70066DA20 /* I18NextPlurals.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,6 +346,7 @@
 			files = (
 				0F923CE9181FDAC900B59924 /* I18NextNamespaceSpec.m in Sources */,
 				0F3033481820F8C90066DA20 /* I18NextTranslationDefaultValueSpec.m in Sources */,
+				0F0C8167182AC555001A5CED /* I18NextLoadSpec.m in Sources */,
 				0F30334F182117390066DA20 /* I18NextSpecHelper.m in Sources */,
 				0F30335C18225AE50066DA20 /* I18NextTranslationPluralsSpec.m in Sources */,
 				0F30334C182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m in Sources */,

@@ -31,15 +31,30 @@ extern NSString* const kI18NextOptionInterpolationPrefix;
 extern NSString* const kI18NextOptionInterpolationSuffix;
 extern NSString* const kI18NextOptionPluralSuffix;
 
+extern NSString* const kI18NextOptionResourcesBaseURL;
+extern NSString* const kI18NextOptionResourcesGetPathTemplate;
+
 extern NSString* const kI18NextNamespaceSeparator;
 extern NSString* const kI18NextDefaultNamespace;
 extern NSString* const kI18NextPluralSuffix;
+
+extern NSString* const kI18NextResourcesGetPathTemplate;
 
 extern NSString* const kI18NextTranslateOptionContext;
 extern NSString* const kI18NextTranslateOptionCount;
 extern NSString* const kI18NextTranslateOptionVariables;
 extern NSString* const kI18NextTranslateOptionDefaultValue;
 extern NSString* const kI18NextTranslateOptionSprintf;
+
+// The error domain for I18Next generated errors
+extern NSString * const I18NextErrorDomain;
+
+typedef enum {
+    I18NextErrorLoadFailed = 1,
+    I18NextErrorInvalidLangData = 2,
+} I18NextError;
+
+extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, they are stored in a composite error
 
 // Helper methods that end up using `t:options:`
 @protocol I18NextDynamicInterface <NSObject>
@@ -167,6 +182,9 @@ extern NSString* const kI18NextTranslateOptionSprintf;
 @property (nonatomic, copy) NSString* interpolationPrefix;
 @property (nonatomic, copy) NSString* interpolationSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
+
+@property (nonatomic, strong) NSURL* resourcesBaseURL;
+@property (nonatomic, copy) NSString* resourcesGetPathTemplate;
 
 + (instancetype)optionsFromDict:(NSDictionary*)dict;
 

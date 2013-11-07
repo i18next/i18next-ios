@@ -26,3 +26,12 @@ I18Next* createDefaultI18NextTestInstance() {
     i18n.lang = @"en-US";
     return i18n;
 }
+
+NSData* fixtureData(NSString* fixtureName) {
+    NSString* resourcePath = [NSBundle bundleForClass:[I18Next class]].resourcePath;
+	NSString* filePath = [NSString pathWithComponents:@[resourcePath, @"fixtures", fixtureName]];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+		[NSException raise:@"FixtureNotFound" format:@"No fixture found at path '%@'", filePath];
+    }
+	return [NSData dataWithContentsOfFile:filePath];
+}

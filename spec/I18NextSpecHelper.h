@@ -9,3 +9,4 @@
 #import "I18Next.h"
 
 extern I18Next* createDefaultI18NextTestInstance();
+extern NSData* fixtureData(NSString* fixtureName);

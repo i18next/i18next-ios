@@ -9,6 +9,7 @@
 #import "I18Next.h"
 #import <objc/runtime.h>
 #import "I18NextPlurals.h"
+#import "I18NextConnection.h"
 #import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
@@ -30,9 +31,14 @@ NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
 NSString* const kI18NextOptionInterpolationSuffix = @"interpolationSuffix";
 NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
 
+NSString* const kI18NextOptionResourcesBaseURL = @"resourcesBaseURL";
+NSString* const kI18NextOptionResourcesGetPathTemplate = @"resourcesGetPathTemplate";
+
 NSString* const kI18NextNamespaceSeparator = @":";
 NSString* const kI18NextDefaultNamespace = @"translation";
 NSString* const kI18NextPluralSuffix = @"_plural";
+
+NSString* const kI18NextResourcesGetPathTemplate = @"locales/__lng__/__ns__.json";
 
 NSString* const kI18NextTranslateOptionContext = @"context";
 NSString* const kI18NextTranslateOptionCount = @"count";
@@ -40,13 +46,20 @@ NSString* const kI18NextTranslateOptionVariables = @"variables";
 NSString* const kI18NextTranslateOptionDefaultValue = @"defaultValue";
 NSString* const kI18NextTranslateOptionSprintf = @"sprintf";
 
+NSString* const I18NextErrorDomain = @"I18NextErrorDomain";
+NSString* const I18NextDetailedErrorsKey = @"I18NextDetailedErrorsKey";
+
 static I18Next* gSharedInstance = nil;
 static dispatch_once_t gOnceToken;
 
 @interface I18Next ()
 
 @property (nonatomic, copy, readwrite) NSDictionary* options;
+@property (nonatomic, strong, readwrite) I18NextOptions* optionsObject;
 @property (nonatomic, copy) NSDictionary* resourcesStore;
+
+@property (nonatomic, strong) NSMutableArray* currentConnections;
+@property (nonatomic, strong) NSOperationQueue* backgroundQueue;
 
 @end
 
@@ -133,6 +146,8 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         self.options = [self defaultOptions];
         
         self.plurals = [I18NextPlurals sharedInstance];
+        
+        self.backgroundQueue = [[NSOperationQueue alloc] init];
     }
     return self;
 }
@@ -158,6 +173,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     options.interpolationPrefix = kI18NextInterpolationPrefix;
     options.interpolationSuffix = kI18NextInterpolationSuffix;
     options.pluralSuffix = kI18NextPluralSuffix;
+    options.resourcesGetPathTemplate = kI18NextResourcesGetPathTemplate;
     
     return options.asDictionary;
 }
@@ -168,12 +184,24 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     [dict addEntriesFromDictionary:options];
     
     self.options = dict;
-    self.resourcesStore = options[kI18NextOptionResourcesStore];
+    self.resourcesStore = self.optionsObject.resourcesStore;
     
-    // TODO: download resources if necessary
-    if (completionBlock) {
-        completionBlock(nil);
+    // return immediately if resources store is passed
+    if (self.resourcesStore) {
+        if (completionBlock) {
+            completionBlock(nil);
+        }
+        return;
     }
+    
+    NSArray* langs = [self languagesForLang:self.lang];
+    [self loadLangs:langs namespaces:self.optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
+        self.resourcesStore = store;
+        
+        if (completionBlock) {
+            completionBlock(error);
+        }
+    }];
 }
 
 - (BOOL)exists:(NSString*)key {
@@ -207,6 +235,16 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 
 #pragma mark Private Methods
 
+- (void)setOptions:(NSDictionary *)options {
+    if ([options isEqual:self.options]) {
+        return;
+    }
+    
+    _options = options;
+    
+    self.optionsObject = [I18NextOptions optionsFromDict:options];
+}
+
 - (NSArray*)languagesForLang:(NSString*)lang {
     NSMutableArray* languages = [NSMutableArray array];
     
@@ -239,6 +277,88 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     }
     
     return languages;
+}
+
+- (void)loadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces completion:(void (^)(NSDictionary* store, NSError* error))completionBlock {
+    __block NSMutableDictionary* store = nil;
+    
+    NSMutableArray* oldConnections = self.currentConnections;
+    self.currentConnections = nil;
+    [oldConnections makeObjectsPerformSelector:@selector(cancel)];
+    
+    NSMutableArray* connections = [NSMutableArray array];
+    NSMutableArray* errors = [NSMutableArray array];
+    for (NSString* lang in langs) {
+        for (NSString* ns in namespaces) {
+            NSString* getPath = [self.optionsObject.resourcesGetPathTemplate i18n_stringByReplacingVariables:@{ @"lng": lang, @"ns": ns }
+                                                                                         interpolationPrefix:self.optionsObject.interpolationPrefix
+                                                                                         interpolationSuffix:self.optionsObject.interpolationSuffix];
+            NSString* langURLString = [self.optionsObject.resourcesBaseURL.absoluteString
+                                       stringByAppendingPathComponent:getPath];
+            NSURL* langURL = [NSURL URLWithString:langURLString];
+            NSURLRequest* request = [NSURLRequest requestWithURL:langURL];
+            
+            __block I18NextConnection* connection =
+            [I18NextConnection asynchronousRequest:request queue:self.backgroundQueue
+                                     completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                NSDictionary* json = nil;
+                NSError* returnError = error;
+                if (!error) {
+                    if (data) {
+                        NSError* jsonParseError = nil;
+                        json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data
+                                                                               options:kNilOptions
+                                                                                 error:&jsonParseError];
+                        
+                        if (jsonParseError) {
+                            // invalid json
+                            returnError = [NSError errorWithDomain:I18NextErrorDomain
+                                                              code:I18NextErrorInvalidLangData
+                                                          userInfo:@{ NSURLErrorFailingURLErrorKey: langURL,
+                                                                      NSUnderlyingErrorKey: jsonParseError }];
+                        }
+                    }
+                    else {
+                        // no data error
+                        returnError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorInvalidLangData
+                                                      userInfo:@{ NSURLErrorFailingURLErrorKey: langURL }];
+                    }
+                }
+                                         
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (json) {
+                        if (!store) {
+                            store = [NSMutableDictionary dictionary];
+                        }
+                        if (!store[lang]) {
+                            store[lang] = [NSMutableDictionary dictionary];
+                        }
+                        store[lang][ns] = json;
+                    }
+                    
+                    if (returnError) {
+                        [errors addObject:returnError];
+                    }
+
+                    [connections removeObject:connection];
+                    if (connections.count == 0 && completionBlock) {
+                        NSError* aggregateError = nil;
+                        if (errors.count > 0) {
+                            aggregateError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorLoadFailed
+                                                             userInfo:@{ I18NextDetailedErrorsKey: errors.copy }];
+                        }
+                        completionBlock(store, aggregateError);
+                    }
+                });
+            }];
+            
+            [connections addObject:connection];
+        }
+        
+    }
+    
+    self.currentConnections = connections;
+    [connections makeObjectsPerformSelector:@selector(start)];
 }
 
 - (NSString*)translate:(id)key lang:(NSString*)lang namespace:(NSString*)namespace context:(NSString*)context
