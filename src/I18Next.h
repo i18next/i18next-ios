@@ -34,6 +34,8 @@ extern NSString* const kI18NextOptionPluralSuffix;
 extern NSString* const kI18NextOptionResourcesBaseURL;
 extern NSString* const kI18NextOptionResourcesGetPathTemplate;
 
+extern NSString* const kI18NextOptionDynamicLoad;
+
 extern NSString* const kI18NextNamespaceSeparator;
 extern NSString* const kI18NextDefaultNamespace;
 extern NSString* const kI18NextPluralSuffix;
@@ -185,6 +187,8 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 
 @property (nonatomic, strong) NSURL* resourcesBaseURL;
 @property (nonatomic, copy) NSString* resourcesGetPathTemplate;
+
+@property (nonatomic, assign) BOOL dynamicLoad;
 
 + (instancetype)optionsFromDict:(NSDictionary*)dict;
 

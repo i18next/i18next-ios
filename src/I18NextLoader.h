@@ -16,4 +16,6 @@
 - (void)loadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces
        completion:(void (^)(NSDictionary* store, NSError* error))completionBlock;
 
+- (void)cancel;
+
 @end

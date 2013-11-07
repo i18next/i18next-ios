@@ -34,6 +34,8 @@ NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
 NSString* const kI18NextOptionResourcesBaseURL = @"resourcesBaseURL";
 NSString* const kI18NextOptionResourcesGetPathTemplate = @"resourcesGetPathTemplate";
 
+NSString* const kI18NextOptionDynamicLoad = @"dynamicLoad";
+
 NSString* const kI18NextNamespaceSeparator = @":";
 NSString* const kI18NextDefaultNamespace = @"translation";
 NSString* const kI18NextPluralSuffix = @"_plural";
@@ -176,6 +178,9 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 }
 
 - (void)loadWithOptions:(NSDictionary*)options completion:(void (^)(NSError* error))completionBlock {
+    // cancel any previous loader
+    [self.loader cancel];
+    
     // TODO: sanitize options
     NSMutableDictionary* dict = self.defaultOptions.mutableCopy;
     [dict addEntriesFromDictionary:options];

@@ -21,6 +21,13 @@ describe(@"I18Next ", ^{
     __block I18Next* i18n = nil;
     __block I18NextOptions* options = nil;
     
+    NSDictionary* testStore =
+    @{
+      @"dev": @{ @"translation": @{ @"simple_dev": @"ok_from_dev" } },
+      @"en": @{ @"translation": @{ @"simple_en": @"ok_from_en" } },
+      @"en-US": @{ @"translation": @{ @"simple_en-US": @"ok_from_en-US" } },
+      };
+    
     beforeEach(^{
         i18n = createDefaultI18NextTestInstance();
         options = [I18NextOptions optionsFromDict:i18n.options];
@@ -31,12 +38,6 @@ describe(@"I18Next ", ^{
         describe(@"with passed in resources set", ^{
             
             beforeEach(^{
-                NSDictionary* testStore =
-                @{
-                  @"dev": @{ @"translation": @{ @"simple_dev": @"ok_from_dev" } },
-                  @"en": @{ @"translation": @{ @"simple_en": @"ok_from_en" } },
-                  @"en-US": @{ @"translation": @{ @"simple_en-US": @"ok_from_en-US" } },
-                  };
                 options.resourcesStore = testStore;
                 [i18n loadWithOptions:options.asDictionary completion:nil];
             });
@@ -117,7 +118,59 @@ describe(@"I18Next ", ^{
                 
             });
             
-            xdescribe(@"with dynamic route", ^{
+            describe(@"with dynamic route", ^{
+                
+                beforeEach(^{
+                    options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
+                    options.resourcesGetPathTemplate = @"locales/resources.json?lng=__lng__&ns=__ns__";
+                    options.dynamicLoad = YES;
+                });
+                
+                describe(@"with the request succeeding", ^{
+                    
+                    beforeEach(^AsyncBlock {
+                        stubRequest(@"GET", @"http:/example.com/locales/resources.json?lng=en-US+en+dev&ns=translation")
+                        .andReturn(200)
+                        .withBody([NSJSONSerialization dataWithJSONObject:testStore options:NSJSONWritingPrettyPrinted error:nil]);
+                        
+                        [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                            done();
+                        }];
+                    });
+                    
+                    it(@"should provide passed resources for translation", ^{
+                        expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
+                        expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
+                        expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
+                    });
+                    
+                });
+                
+                describe(@"with the request failing", ^{
+                    beforeEach(^{
+                        stubRequest(@"GET", @"http:/example.com/locales/resources.json?lng=en-US+en+dev&ns=translation")
+                        .andReturn(404);
+                    });
+                    
+                    it(@"should provide no translations", ^AsyncBlock {
+                        [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                            expect([i18n t:@"simple_en-US"]).to.equal(@"simple_en-US");
+                            expect([i18n t:@"simple_en"]).to.equal(@"simple_en");
+                            expect([i18n t:@"simple_dev"]).to.equal(@"simple_dev");
+                            done();
+                        }];
+                    });
+                    
+                    it(@"should provide an error", ^AsyncBlock {
+                        [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                            expect(error).toNot.beNil();
+                            expect(error.domain).to.equal(@"I18NextErrorDomain");
+                            expect(error.code).to.equal(I18NextErrorLoadFailed);
+                            expect(error.userInfo[I18NextDetailedErrorsKey]).toNot.beEmpty();
+                            done();
+                        }];
+                    });
+                });
                 
             });
         });
