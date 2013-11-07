@@ -43,11 +43,6 @@ describe(@"I18Next", ^{
                     expect([i18n t:@"notFound" defaultValue:@"second param defaultValue"]).to.equal(@"second param defaultValue");
                 });
                 
-                xit(@"should recognize the defaultValue syntax set as shortcutFunction", ^{
-                    // Not sure We'll support this though
-                    //expect([i18n t:@"notFound", @"second param defaultValue"]).to.equal(@"second param defaultValue");
-                });
-                
             });
         
     });
