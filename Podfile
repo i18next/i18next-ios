@@ -1,7 +1,7 @@
 inhibit_all_warnings!
 
 target :i18nextspec do
-  pod 'Specta', :git => 'git@github.com:specta/specta.git', :branch => 'xctest'
+  pod 'Specta'
   pod 'Expecta'
   pod 'Nocilla'
   # pod 'OCHamcrest',  '~> 1.7'     # hamcrest matchers
