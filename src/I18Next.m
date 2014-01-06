@@ -215,12 +215,14 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     self.loader = loader;
     
     [loader loadLangs:langs namespaces:self.optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
-        if (store && self.optionsObject.useLocalCache) {
-            NSError* cacheError = nil;
-            [I18NextCache writeStore:store inDirectory:self.optionsObject.localCachePath error:&cacheError];
+        if (store) {
+            if (self.optionsObject.useLocalCache) {
+                NSError* cacheError = nil;
+                [I18NextCache writeStore:store inDirectory:self.optionsObject.localCachePath error:&cacheError];
+            }
+            
+            self.resourcesStore = store;
         }
-        
-        self.resourcesStore = store;
         
         if (completionBlock) {
             completionBlock(error);
