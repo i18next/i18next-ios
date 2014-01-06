@@ -113,9 +113,9 @@
                                  }
                                  else if (data) {
                                      NSError* jsonParseError = nil;
-                                     json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data
-                                                                                            options:kNilOptions
-                                                                                              error:&jsonParseError];
+                                     id jsonObject = [NSJSONSerialization JSONObjectWithData:data
+                                                                            options:kNilOptions
+                                                                              error:&jsonParseError];
                                      
                                      if (jsonParseError) {
                                          // invalid json
@@ -124,6 +124,16 @@
                                                                        userInfo:@{ NSURLErrorFailingURLErrorKey: url,
                                                                                    NSUnderlyingErrorKey: jsonParseError }];
                                      }
+                                     
+                                     if (![jsonObject isKindOfClass:[NSDictionary class]]) {
+                                         // object must be a dictionary
+                                         returnError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorInvalidLangData
+                                                                       userInfo:@{ NSURLErrorFailingURLErrorKey: url }];
+                                     }
+                                     else {
+                                         json = jsonObject;
+                                     }
+                                        
                                  }
                                  else {
                                      // no data error
@@ -151,6 +161,7 @@
                                          aggregateError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorLoadFailed
                                                                           userInfo:@{ I18NextDetailedErrorsKey: self.errors.copy }];
                                      }
+                                     
                                      self.completionBlock(self.store, aggregateError);
                                  }
                              });
