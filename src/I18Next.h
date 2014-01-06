@@ -25,11 +25,13 @@ extern NSString* const kI18NextOptionFallbackNamespaces;
 extern NSString* const kI18NextOptionFallbackOnNull;
 extern NSString* const kI18NextOptionReturnObjectTrees;
 extern NSString* const kI18NextOptionResourcesStore;
+extern NSString* const kI18NextOptionUseLocalCache;
 extern NSString* const kI18NextOptionNamespaceSeparator;
 extern NSString* const kI18NextOptionKeySeparator;
 extern NSString* const kI18NextOptionInterpolationPrefix;
 extern NSString* const kI18NextOptionInterpolationSuffix;
 extern NSString* const kI18NextOptionPluralSuffix;
+extern NSString* const kI18NextOptionLocalCachePath;
 
 extern NSString* const kI18NextOptionResourcesBaseURL;
 extern NSString* const kI18NextOptionResourcesGetPathTemplate;
@@ -54,6 +56,9 @@ extern NSString * const I18NextErrorDomain;
 typedef enum {
     I18NextErrorLoadFailed = 1,
     I18NextErrorInvalidLangData = 2,
+    
+    I18NextErrorCacheReadFailed = 10,
+    I18NextErrorCacheWriteFailed = 11
 } I18NextError;
 
 extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, they are stored in a composite error
@@ -179,11 +184,13 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 @property (nonatomic, assign) BOOL fallbackOnNull;
 @property (nonatomic, assign) BOOL returnObjectTrees;
 @property (nonatomic, copy) NSDictionary* resourcesStore;
+@property (nonatomic, assign) BOOL useLocalCache;
 @property (nonatomic, copy) NSString* namespaceSeparator;
 @property (nonatomic, copy) NSString* keySeparator;
 @property (nonatomic, copy) NSString* interpolationPrefix;
 @property (nonatomic, copy) NSString* interpolationSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
+@property (nonatomic, copy) NSString* localCachePath;
 
 @property (nonatomic, strong) NSURL* resourcesBaseURL;
 @property (nonatomic, copy) NSString* resourcesGetPathTemplate;

@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import "I18NextPlurals.h"
 #import "I18NextLoader.h"
+#import "I18NextCache.h"
 #import "NSObject+I18Next.h"
 #import "NSString+I18Next.h"
 
@@ -25,11 +26,13 @@ NSString* const kI18NextOptionFallbackNamespaces = @"fallbackNamespaces";
 NSString* const kI18NextOptionFallbackOnNull = @"fallbackOnNull";
 NSString* const kI18NextOptionReturnObjectTrees = @"returnObjectTrees";
 NSString* const kI18NextOptionResourcesStore = @"resourcesStore";
+NSString* const kI18NextOptionUseLocalCache = @"useLocalCache";
 NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
 NSString* const kI18NextOptionKeySeparator = @"keySeparator";
 NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
 NSString* const kI18NextOptionInterpolationSuffix = @"interpolationSuffix";
 NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
+NSString* const kI18NextOptionLocalCachePath = @"localCachePath";
 
 NSString* const kI18NextOptionResourcesBaseURL = @"resourcesBaseURL";
 NSString* const kI18NextOptionResourcesGetPathTemplate = @"resourcesGetPathTemplate";
@@ -174,6 +177,9 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     options.pluralSuffix = kI18NextPluralSuffix;
     options.resourcesGetPathTemplate = kI18NextResourcesGetPathTemplate;
     
+    NSString *cacheDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+    options.localCachePath = [cacheDirectory stringByAppendingPathComponent:@"I18NextCache"];
+    
     return options.asDictionary;
 }
 
@@ -198,10 +204,22 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     
     NSArray* langs = [self languagesForLang:self.lang];
     
+    if (self.optionsObject.useLocalCache) {
+        NSError* cacheError = nil;
+        self.resourcesStore = [I18NextCache readStoreLangs:langs
+                                               inDirectory:self.optionsObject.localCachePath
+                                                     error:&cacheError];
+    }
+    
     I18NextLoader* loader = [[I18NextLoader alloc] initWithOptions:self.optionsObject];
     self.loader = loader;
     
     [loader loadLangs:langs namespaces:self.optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
+        if (store && self.optionsObject.useLocalCache) {
+            NSError* cacheError = nil;
+            [I18NextCache writeStore:store inDirectory:self.optionsObject.localCachePath error:&cacheError];
+        }
+        
         self.resourcesStore = store;
         
         if (completionBlock) {
