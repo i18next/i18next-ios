@@ -26,6 +26,7 @@ NSString* const kI18NextOptionFallbackNamespaces = @"fallbackNamespaces";
 NSString* const kI18NextOptionFallbackOnNull = @"fallbackOnNull";
 NSString* const kI18NextOptionReturnObjectTrees = @"returnObjectTrees";
 NSString* const kI18NextOptionResourcesStore = @"resourcesStore";
+NSString* const kI18NextOptionUseLanguageBundles = @"useLanguageBundles";
 NSString* const kI18NextOptionUseLocalCache = @"useLocalCache";
 NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
 NSString* const kI18NextOptionKeySeparator = @"keySeparator";
@@ -33,6 +34,7 @@ NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
 NSString* const kI18NextOptionInterpolationSuffix = @"interpolationSuffix";
 NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
 NSString* const kI18NextOptionLocalCachePath = @"localCachePath";
+NSString* const kI18NextOptionFilenameInLanguageBundles = @"filenameInLanguageBundles";
 
 NSString* const kI18NextOptionResourcesBaseURL = @"resourcesBaseURL";
 NSString* const kI18NextOptionResourcesGetPathTemplate = @"resourcesGetPathTemplate";
@@ -42,6 +44,7 @@ NSString* const kI18NextOptionDynamicLoad = @"dynamicLoad";
 NSString* const kI18NextNamespaceSeparator = @":";
 NSString* const kI18NextDefaultNamespace = @"translation";
 NSString* const kI18NextPluralSuffix = @"_plural";
+NSString* const kI18NextFilenameInLanguageBundles = @"i18next.json";
 
 NSString* const kI18NextResourcesGetPathTemplate = @"locales/__lng__/__ns__.json";
 
@@ -179,6 +182,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     
     NSString *cacheDirectory = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
     options.localCachePath = [cacheDirectory stringByAppendingPathComponent:@"I18NextCache"];
+    options.filenameInLanguageBundles = kI18NextFilenameInLanguageBundles;
     
     return options.asDictionary;
 }
@@ -209,6 +213,12 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         self.resourcesStore = [I18NextCache readStoreLangs:langs
                                                inDirectory:self.optionsObject.localCachePath
                                                      error:&cacheError];
+    }
+    if (!self.resourcesStore && self.optionsObject.useLanguageBundles) {
+        NSError* cacheError = nil;
+        self.resourcesStore = [I18NextCache readBundledStoreLangs:langs
+                                                         filename:self.optionsObject.filenameInLanguageBundles
+                                                            error:&cacheError];
     }
     
     I18NextLoader* loader = [[I18NextLoader alloc] initWithOptions:self.optionsObject];

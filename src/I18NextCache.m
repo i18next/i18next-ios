@@ -12,38 +12,75 @@
 @implementation I18NextCache
 
 + (NSDictionary*)readStoreLangs:(NSArray*)langs inDirectory:(NSString*)path error:(NSError**)error {
+    NSMutableArray* langsToRead = [NSMutableArray array];
+    NSMutableArray* paths = [NSMutableArray array];
+    
+    for (id l in langs) {
+        if ([l isKindOfClass:[NSString class]]) {
+            NSString* lang = l;
+            NSString* langFile = [path stringByAppendingPathComponent:[lang stringByAppendingPathExtension:@"json"]];
+            if (langFile) {
+                [langsToRead addObject:lang];
+                [paths addObject:langFile];
+            }
+        }
+    }
+    
+    return [self readStoreLangs:langsToRead atPaths:paths error:error];
+}
+
++ (NSDictionary*)readBundledStoreLangs:(NSArray*)langs filename:(NSString*)filename error:(NSError**)error {
+    NSMutableArray* langsToRead = [NSMutableArray array];
+    NSMutableArray* paths = [NSMutableArray array];
+    
+    for (id l in langs) {
+        if ([l isKindOfClass:[NSString class]]) {
+            NSString* lang = l;
+            NSString* path = [[NSBundle bundleForClass:[self class]] pathForResource:lang ofType:@"lproj"];
+            NSString* langFile = [path stringByAppendingPathComponent:filename];
+            if (langFile) {
+                [langsToRead addObject:lang];
+                [paths addObject:langFile];
+            }
+        }
+    }
+    
+    return [self readStoreLangs:langsToRead atPaths:paths error:error];
+}
+
++ (NSDictionary*)readStoreLangs:(NSArray*)langs atPaths:(NSArray*)paths error:(NSError**)error {
+    NSParameterAssert(langs.count == paths.count);
+    
     NSMutableArray* errors = [NSMutableArray array];
     
     NSMutableDictionary* store = [NSMutableDictionary dictionary];
     
     NSFileManager *fileManager = [[NSFileManager alloc] init];
     
-    for (id l in langs) {
-        if ([l isKindOfClass:[NSString class]]) {
-            NSString* lang = l;
-            NSString* langFile = [path stringByAppendingPathComponent:[lang stringByAppendingPathExtension:@"json"]];
-            if ([fileManager fileExistsAtPath:langFile]) {
-                NSError* readError = nil;
-                NSData* data = [NSData dataWithContentsOfFile:langFile options:kNilOptions error:&readError];
+    for (NSUInteger i = 0; i < langs.count; ++i) {
+        NSString* lang = langs[i];
+        NSString* langFile = paths[i];
+        if ([fileManager fileExistsAtPath:langFile]) {
+            NSError* readError = nil;
+            NSData* data = [NSData dataWithContentsOfFile:langFile options:kNilOptions error:&readError];
+            
+            if (readError) {
+                [errors addObject:readError];
+            }
+            if (data) {
+                NSError* jsonError = nil;
+                id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
                 
-                if (readError) {
-                    [errors addObject:readError];
+                if (jsonError) {
+                    [errors addObject:jsonError];
                 }
-                if (data) {
-                    NSError* jsonError = nil;
-                    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
-                    
-                    if (jsonError) {
-                        [errors addObject:jsonError];
-                    }
-                    if (![jsonObject isKindOfClass:[NSDictionary class]]) {
-                        [errors addObject:
-                         [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorInvalidLangData
-                                         userInfo:nil]];
-                    }
-                    else {
-                        store[lang] = jsonObject;
-                    }
+                if (![jsonObject isKindOfClass:[NSDictionary class]]) {
+                    [errors addObject:
+                     [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorInvalidLangData
+                                     userInfo:nil]];
+                }
+                else {
+                    store[lang] = jsonObject;
                 }
             }
         }

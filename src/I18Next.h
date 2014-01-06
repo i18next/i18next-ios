@@ -25,6 +25,7 @@ extern NSString* const kI18NextOptionFallbackNamespaces;
 extern NSString* const kI18NextOptionFallbackOnNull;
 extern NSString* const kI18NextOptionReturnObjectTrees;
 extern NSString* const kI18NextOptionResourcesStore;
+extern NSString* const kI18NextOptionUseLanguageBundles;
 extern NSString* const kI18NextOptionUseLocalCache;
 extern NSString* const kI18NextOptionNamespaceSeparator;
 extern NSString* const kI18NextOptionKeySeparator;
@@ -32,6 +33,7 @@ extern NSString* const kI18NextOptionInterpolationPrefix;
 extern NSString* const kI18NextOptionInterpolationSuffix;
 extern NSString* const kI18NextOptionPluralSuffix;
 extern NSString* const kI18NextOptionLocalCachePath;
+extern NSString* const kI18NextOptionFilenameInLanguageBundles;
 
 extern NSString* const kI18NextOptionResourcesBaseURL;
 extern NSString* const kI18NextOptionResourcesGetPathTemplate;
@@ -184,6 +186,7 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 @property (nonatomic, assign) BOOL fallbackOnNull;
 @property (nonatomic, assign) BOOL returnObjectTrees;
 @property (nonatomic, copy) NSDictionary* resourcesStore;
+@property (nonatomic, assign) BOOL useLanguageBundles;
 @property (nonatomic, assign) BOOL useLocalCache;
 @property (nonatomic, copy) NSString* namespaceSeparator;
 @property (nonatomic, copy) NSString* keySeparator;
@@ -191,6 +194,7 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 @property (nonatomic, copy) NSString* interpolationSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
 @property (nonatomic, copy) NSString* localCachePath;
+@property (nonatomic, copy) NSString* filenameInLanguageBundles;
 
 @property (nonatomic, strong) NSURL* resourcesBaseURL;
 @property (nonatomic, copy) NSString* resourcesGetPathTemplate;
