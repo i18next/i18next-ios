@@ -73,7 +73,7 @@ describe(@"I18Next ", ^{
                         }];
                     });
                     
-                    it(@"should provide passed resources for translation", ^{
+                    it(@"should provide loaded resources for translation", ^{
                         expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
                         expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
                         expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
@@ -138,7 +138,7 @@ describe(@"I18Next ", ^{
                         }];
                     });
                     
-                    it(@"should provide passed resources for translation", ^{
+                    it(@"should provide loaded resources for translation", ^{
                         expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
                         expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
                         expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
