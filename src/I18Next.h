@@ -210,6 +210,8 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 
 @end
 
+#define I18NEXT(args) [[I18Next sharedInstance] t:args]
+
 #define I18NEXT_SPRINTF_ARGS(...) \
     [I18NextSprintfArgs formatBlock:^(NSString* format) { \
     return [I18NextSprintf sprintf:format, ##__VA_ARGS__]; \
