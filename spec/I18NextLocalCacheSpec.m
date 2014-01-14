@@ -46,7 +46,7 @@ describe(@"I18Next", ^{
             .withBody(fixtureData(@"locales/dev/translation.json"));
             
             options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-            options.useLocalCache = YES;
+            options.updateLocalCache = YES;
             [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
                 done();
             }];
@@ -68,14 +68,16 @@ describe(@"I18Next", ^{
         
         describe(@"on later load", ^{
             
-            beforeEach(^{
+            beforeEach(^AsyncBlock {
                 i18n = createDefaultI18NextTestInstance();
                 options = [I18NextOptions optionsFromDict:i18n.options];
-                options.useLocalCache = YES;
-                [i18n loadWithOptions:options.asDictionary completion:nil];
+                options.loadFromLocalCache = YES;
+                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    done();
+                }];
             });
             
-            it(@"should provide cached resources for translation while loading", ^{
+            it(@"should provide cached resources for translation", ^{
                 expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
                 expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
                 expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");

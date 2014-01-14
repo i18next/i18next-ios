@@ -26,8 +26,9 @@ NSString* const kI18NextOptionFallbackNamespaces = @"fallbackNamespaces";
 NSString* const kI18NextOptionFallbackOnNull = @"fallbackOnNull";
 NSString* const kI18NextOptionReturnObjectTrees = @"returnObjectTrees";
 NSString* const kI18NextOptionResourcesStore = @"resourcesStore";
-NSString* const kI18NextOptionUseLanguageBundles = @"useLanguageBundles";
-NSString* const kI18NextOptionUseLocalCache = @"useLocalCache";
+NSString* const kI18NextOptionLoadFromLanguageBundles = @"loadFromLanguageBundles";
+NSString* const kI18NextOptionLoadFromLocalCache = @"loadFromLocalCache";
+NSString* const kI18NextOptionUpdateLocalCache = @"updateLocalCache";
 NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
 NSString* const kI18NextOptionKeySeparator = @"keySeparator";
 NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
@@ -195,42 +196,16 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     NSMutableDictionary* dict = self.defaultOptions.mutableCopy;
     [dict addEntriesFromDictionary:options];
     
-    self.options = dict;
-    self.resourcesStore = self.optionsObject.resourcesStore;
-    
-    // return immediately if resources store is passed
-    if (self.resourcesStore) {
-        if (completionBlock) {
-            completionBlock(nil);
-        }
-        return;
-    }
-    
-    NSArray* langs = [self languagesForLang:self.lang];
-    
-    if (self.optionsObject.useLocalCache) {
-        NSError* cacheError = nil;
-        self.resourcesStore = [I18NextCache readStoreLangs:langs
-                                               inDirectory:self.optionsObject.localCachePath
-                                                     error:&cacheError];
-    }
-    if (!self.resourcesStore && self.optionsObject.useLanguageBundles) {
-        NSError* cacheError = nil;
-        self.resourcesStore = [I18NextCache readBundledStoreLangs:langs
-                                                         filename:self.optionsObject.filenameInLanguageBundles
-                                                            error:&cacheError];
-    }
-    
-    I18NextLoader* loader = [[I18NextLoader alloc] initWithOptions:self.optionsObject];
+    I18NextOptions* optionsObject = [I18NextOptions optionsFromDict:dict];
+    I18NextLoader* loader = [[I18NextLoader alloc] initWithOptions:optionsObject];
     self.loader = loader;
     
-    [loader loadLangs:langs namespaces:self.optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
+    NSArray* langs = [self languagesForLang:optionsObject.lang];
+    
+    [loader loadLangs:langs namespaces:optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
+        self.options = dict;
+        
         if (store) {
-            if (self.optionsObject.useLocalCache) {
-                NSError* cacheError = nil;
-                [I18NextCache writeStore:store inDirectory:self.optionsObject.localCachePath error:&cacheError];
-            }
-            
             self.resourcesStore = store;
         }
         

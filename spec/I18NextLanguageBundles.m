@@ -28,23 +28,14 @@ describe(@"I18Next", ^{
     
     describe(@"using language bundles", ^{
         
-        beforeEach(^{
-            stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en-US/translation.json"));
-            stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en/translation.json"));
-            stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/dev/translation.json"));
-            
-            options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-            options.useLanguageBundles = YES;
-            [i18n loadWithOptions:options.asDictionary completion:nil];
+        beforeEach(^AsyncBlock {
+            options.loadFromLanguageBundles = YES;
+            [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                done();
+            }];
         });
         
-        it(@"should provide bundled resources for translation while loading", ^{
+        it(@"should provide bundled resources for translation", ^{
             expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_bundled_en-US");
             expect([i18n t:@"simple_en"]).to.equal(@"ok_from_bundled_en");
             

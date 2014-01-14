@@ -8,6 +8,7 @@
 
 #import "I18NextLoader.h"
 #import "I18NextConnection.h"
+#import "I18NextCache.h"
 #import "NSString+I18Next.h"
 
 @interface I18NextLoader ()
@@ -21,11 +22,24 @@
 @property (nonatomic, strong) NSMutableArray* activeConnections;
 @property (nonatomic, strong) NSMutableArray* errors;
 
-@property (nonatomic, strong) NSMutableDictionary* store;
+@property (nonatomic, strong) NSDictionary* store;
 
 @end
 
 @implementation I18NextLoader
+
+/**
+ A serial dispatch queue used for all deserialization of response bodies
+ */
+static dispatch_queue_t I18NextLoaderSerialQueue() {
+    static dispatch_queue_t queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue = dispatch_queue_create("org.i18next.loader", DISPATCH_QUEUE_SERIAL);
+    });
+    
+    return queue;
+}
 
 - (instancetype)initWithOptions:(I18NextOptions*)options {
     self = [super init];
@@ -33,6 +47,8 @@
         self.optionsObject = options;
         
         self.backgroundQueue = [[NSOperationQueue alloc] init];
+        
+        self.errors = [NSMutableArray array];
     }
     return self;
 }
@@ -40,6 +56,53 @@
 - (void)loadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces completion:(void (^)(NSDictionary* store, NSError* error))completionBlock {
     self.completionBlock = completionBlock;
     
+    // return immediately if resources store is passed
+    if (self.optionsObject.resourcesStore) {
+        self.store = self.optionsObject.resourcesStore;
+        [self dispatchCompleted];
+    }
+    else if (self.optionsObject.loadFromLocalCache || self.optionsObject.loadFromLanguageBundles) {
+        [self localLoadLangs:langs namespaces:namespaces];
+    }
+    else if (self.optionsObject.resourcesBaseURL) {
+        [self urlLoadLangs:langs namespaces:namespaces];
+    }
+}
+
+- (void)cancel {
+    [self.activeConnections makeObjectsPerformSelector:@selector(cancel)];
+    self.completionBlock = nil;
+}
+
+#pragma mark Private Methods
+
+- (void)localLoadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces {
+    dispatch_async(I18NextLoaderSerialQueue(), ^{
+        if (self.optionsObject.loadFromLocalCache) {
+            NSError* cacheError = nil;
+            self.store = [I18NextCache readStoreLangs:langs
+                                          inDirectory:self.optionsObject.localCachePath
+                                                error:&cacheError];
+            if (cacheError) {
+                [self.errors addObject:cacheError];
+            }
+        }
+        if (!self.store && self.optionsObject.loadFromLanguageBundles) {
+            NSError* cacheError = nil;
+            self.store = [I18NextCache readBundledStoreLangs:langs
+                                                    filename:self.optionsObject.filenameInLanguageBundles
+                                                       error:&cacheError];
+            if (cacheError) {
+                [self.errors addObject:cacheError];
+            }
+        }
+        
+        [self dispatchCompleted];
+    });
+    
+}
+
+- (void)urlLoadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces {
     NSMutableArray* connections = [NSMutableArray array];
     
     if (self.optionsObject.dynamicLoad) {
@@ -66,7 +129,7 @@
                         self.store = [NSMutableDictionary dictionary];
                     }
                     if (!self.store[lang]) {
-                        self.store[lang] = [NSMutableDictionary dictionary];
+                        ((NSMutableDictionary*)self.store)[lang] = [NSMutableDictionary dictionary];
                     }
                     self.store[lang][ns] = json;
                 }];
@@ -79,13 +142,6 @@
     self.activeConnections = connections;
     [connections makeObjectsPerformSelector:@selector(start)];
 }
-
-- (void)cancel {
-    [self.activeConnections makeObjectsPerformSelector:@selector(cancel)];
-    self.completionBlock = nil;
-}
-
-#pragma mark Private Methods
 
 - (I18NextConnection*)connectionForURLPath:(NSString*)urlPath storeJSONBlock:(void (^)(NSDictionary* json))storeJSONBlock {
     NSString* urlString = [self.optionsObject.resourcesBaseURL.absoluteString
@@ -142,32 +198,51 @@
                                  }
                              }
                              
-                             dispatch_async(dispatch_get_main_queue(), ^{
+                             dispatch_async(I18NextLoaderSerialQueue(), ^{
                                  if (json && storeJSONBlock) {
                                      storeJSONBlock(json);
                                  }
                                  
                                  if (returnError) {
-                                     if (!self.errors) {
-                                         self.errors = [NSMutableArray array];
-                                     }
                                      [self.errors addObject:returnError];
                                  }
                                  
                                  [self.activeConnections removeObject:connection];
-                                 if (self.activeConnections.count == 0 && self.completionBlock) {
-                                     NSError* aggregateError = nil;
-                                     if (self.errors.count > 0) {
-                                         aggregateError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorLoadFailed
-                                                                          userInfo:@{ I18NextDetailedErrorsKey: self.errors.copy }];
+                                 if (self.activeConnections.count == 0) {
+                                     if (self.optionsObject.updateLocalCache) {
+                                         NSError* cacheError = nil;
+                                         [I18NextCache writeStore:self.store inDirectory:self.optionsObject.localCachePath error:&cacheError];
+                                         
+                                         if (cacheError) {
+                                             [self.errors addObject:cacheError];
+                                         }
                                      }
                                      
-                                     self.completionBlock(self.store, aggregateError);
+                                     [self dispatchCompleted];
                                  }
                              });
                          }];
     
     return connection;
+}
+
+- (void)dispatchCompleted {
+    if (self.completionBlock) {
+        NSError* aggregateError = nil;
+        if (self.errors.count > 0) {
+            aggregateError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorLoadFailed
+                                             userInfo:@{ I18NextDetailedErrorsKey: self.errors.copy }];
+        }
+        
+        if ([NSThread isMainThread]) {
+            self.completionBlock(self.store, aggregateError);
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.completionBlock(self.store, aggregateError);
+            });
+        }
+    }
 }
 
 @end
