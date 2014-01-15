@@ -34,6 +34,7 @@
 		0FD96A67181ED7240024F886 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD1B181EC0B00008F1C8 /* Foundation.framework */; };
 		0FD96A68181ED7240024F886 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD2C181EC0B00008F1C8 /* UIKit.framework */; };
 		0FD96A77181ED7B40024F886 /* I18NextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */; };
+		0FEBFA8D1886914A004BAF6C /* I18NextTranslationNestingSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FEBFA8C1886914A004BAF6C /* I18NextTranslationNestingSpec.m */; };
 		0FFAFF83187729F500A5EE68 /* I18NextLocalCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FFAFF82187729F500A5EE68 /* I18NextLocalCacheSpec.m */; };
 		0FFAFF86187AAE0700A5EE68 /* I18NextCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FFAFF85187AAE0700A5EE68 /* I18NextCache.m */; };
 		0FFAFF88187AE0A400A5EE68 /* I18NextLanguageBundles.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FFAFF87187AE0A400A5EE68 /* I18NextLanguageBundles.m */; };
@@ -101,6 +102,7 @@
 		0F923CEE18201D8B00B59924 /* NSString+I18Next.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+I18Next.h"; sourceTree = "<group>"; };
 		0F923CEF18201D8B00B59924 /* NSString+I18Next.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+I18Next.m"; sourceTree = "<group>"; };
 		0FD96A64181ED7230024F886 /* i18nextspec.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i18nextspec.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FEBFA8C1886914A004BAF6C /* I18NextTranslationNestingSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationNestingSpec.m; sourceTree = "<group>"; };
 		0FFAFF82187729F500A5EE68 /* I18NextLocalCacheSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextLocalCacheSpec.m; sourceTree = "<group>"; };
 		0FFAFF84187AAE0700A5EE68 /* I18NextCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = I18NextCache.h; sourceTree = "<group>"; };
 		0FFAFF85187AAE0700A5EE68 /* I18NextCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextCache.m; sourceTree = "<group>"; };
@@ -198,8 +200,8 @@
 		0F20FD31181EC0B00008F1C8 /* spec */ = {
 			isa = PBXGroup;
 			children = (
-				0FFAFF8D187AE1E500A5EE68 /* i18next.json */,
 				0F75F0AE182BDBC300052192 /* fixtures */,
+				0FFAFF8D187AE1E500A5EE68 /* i18next.json */,
 				0FFAFF87187AE0A400A5EE68 /* I18NextLanguageBundles.m */,
 				0F0C8166182AC555001A5CED /* I18NextLoadSpec.m */,
 				0FFAFF82187729F500A5EE68 /* I18NextLocalCacheSpec.m */,
@@ -214,6 +216,7 @@
 				0F303349182102F60066DA20 /* I18NextTranslationExistsSpec.m */,
 				0F30335018211A1D0066DA20 /* I18NextTranslationInterpolationSpec.m */,
 				0F30335518214EDE0066DA20 /* I18NextTranslationMissingKeySpec.m */,
+				0FEBFA8C1886914A004BAF6C /* I18NextTranslationNestingSpec.m */,
 				0F303357182182AE0066DA20 /* I18NextTranslationNullValueSpec.m */,
 				0F303359182242210066DA20 /* I18NextTranslationObjectValueSpec.m */,
 				0F30335B18225AE50066DA20 /* I18NextTranslationPluralsSpec.m */,
@@ -386,6 +389,7 @@
 				0F30335618214EDE0066DA20 /* I18NextTranslationMissingKeySpec.m in Sources */,
 				0FFAFF88187AE0A400A5EE68 /* I18NextLanguageBundles.m in Sources */,
 				0F3033611827F76B0066DA20 /* I18NextTranslationSprintfSpec.m in Sources */,
+				0FEBFA8D1886914A004BAF6C /* I18NextTranslationNestingSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,6 +32,8 @@ extern NSString* const kI18NextOptionNamespaceSeparator;
 extern NSString* const kI18NextOptionKeySeparator;
 extern NSString* const kI18NextOptionInterpolationPrefix;
 extern NSString* const kI18NextOptionInterpolationSuffix;
+extern NSString* const kI18NextOptionReusePrefix;
+extern NSString* const kI18NextOptionReuseSuffix;
 extern NSString* const kI18NextOptionPluralSuffix;
 extern NSString* const kI18NextOptionLocalCachePath;
 extern NSString* const kI18NextOptionFilenameInLanguageBundles;
@@ -194,6 +196,8 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 @property (nonatomic, copy) NSString* keySeparator;
 @property (nonatomic, copy) NSString* interpolationPrefix;
 @property (nonatomic, copy) NSString* interpolationSuffix;
+@property (nonatomic, copy) NSString* reusePrefix;
+@property (nonatomic, copy) NSString* reuseSuffix;
 @property (nonatomic, copy) NSString* pluralSuffix;
 @property (nonatomic, copy) NSString* localCachePath;
 @property (nonatomic, copy) NSString* filenameInLanguageBundles;

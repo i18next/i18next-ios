@@ -33,6 +33,8 @@ NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
 NSString* const kI18NextOptionKeySeparator = @"keySeparator";
 NSString* const kI18NextOptionInterpolationPrefix = @"interpolationPrefix";
 NSString* const kI18NextOptionInterpolationSuffix = @"interpolationSuffix";
+NSString* const kI18NextOptionReusePrefix = @"reusePrefix";
+NSString* const kI18NextOptionReuseSuffix = @"reuseSuffix";
 NSString* const kI18NextOptionPluralSuffix = @"pluralSuffix";
 NSString* const kI18NextOptionLocalCachePath = @"localCachePath";
 NSString* const kI18NextOptionFilenameInLanguageBundles = @"filenameInLanguageBundles";
@@ -44,6 +46,8 @@ NSString* const kI18NextOptionDynamicLoad = @"dynamicLoad";
 
 NSString* const kI18NextNamespaceSeparator = @":";
 NSString* const kI18NextDefaultNamespace = @"translation";
+NSString* const kI18NextReusePrefix = @"$t(";
+NSString* const kI18NextReuseSuffix = @")";
 NSString* const kI18NextPluralSuffix = @"_plural";
 NSString* const kI18NextFilenameInLanguageBundles = @"i18next.json";
 
@@ -178,6 +182,8 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     options.keySeparator = kI18NextKeySeparator;
     options.interpolationPrefix = kI18NextInterpolationPrefix;
     options.interpolationSuffix = kI18NextInterpolationSuffix;
+    options.reusePrefix = kI18NextReusePrefix;
+    options.reuseSuffix = kI18NextReuseSuffix;
     options.pluralSuffix = kI18NextPluralSuffix;
     options.resourcesGetPathTemplate = kI18NextResourcesGetPathTemplate;
     
@@ -417,9 +423,67 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
                                      interpolationPrefix:self.options[kI18NextOptionInterpolationPrefix]
                                      interpolationSuffix:self.options[kI18NextOptionInterpolationSuffix]
                                             keySeparator:self.options[kI18NextOptionKeySeparator]];
+        result = [self replaceReusedStringsInString:result lang:lng namespace:ns fallbackNamespaces:fallbackNamespaces
+                                          variables:variables sprintf:sprintf defaultValue:nil];
         
         if(sprintf.formatBlock) {
             result = sprintf.formatBlock(result);
+        }
+    }
+    
+    return result;
+}
+
+- (NSString*)replaceReusedStringsInString:(NSString*)value lang:(NSString*)lng namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces variables:(NSDictionary*)variables sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
+    
+    NSError* error = nil;
+    
+    NSRegularExpression* regex =
+    [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"%@(.+)%@",
+                                                       [NSRegularExpression escapedPatternForString:self.optionsObject.reusePrefix],
+                                                       [NSRegularExpression escapedPatternForString:self.optionsObject.reuseSuffix]]
+                                              options:0 error:&error];
+    NSMutableSet* reusedRawStrings = [NSMutableSet set];
+    [regex enumerateMatchesInString:value options:0 range:NSMakeRange(0, value.length)
+                         usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
+                             if (match.numberOfRanges > 1) {
+                                 [reusedRawStrings addObject:[value substringWithRange:[match rangeAtIndex:1]]];
+                             }
+                         }];
+    
+    NSString* result = value;
+    
+    for (NSString* rawString in reusedRawStrings) {
+        NSRange commaRange = [rawString rangeOfString:@","];
+        NSString* key = rawString;
+        NSString* rawOptions = nil;
+        if (commaRange.location != NSNotFound) {
+            key = [rawString substringToIndex:commaRange.location];
+            rawOptions = [rawString substringFromIndex:commaRange.location + commaRange.length];
+        }
+        
+        key = [key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        rawOptions = [rawOptions stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        NSDictionary* options = nil;
+        if (rawOptions.length) {
+            NSError* jsonError = nil;
+            id jsonObject = [NSJSONSerialization JSONObjectWithData:[rawOptions dataUsingEncoding:NSUTF8StringEncoding]
+                                                            options:kNilOptions error:&jsonError];
+            
+            if (jsonError || ![jsonObject isKindOfClass:[NSDictionary class]]) {
+                NSLog(@"Invalid options for nested key: %@", rawString);
+            }
+            else {
+                options = jsonObject;
+            }
+        }
+        
+        id value = [self t:key options:options];
+        if (value) {
+            result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@%@%@",
+                                                                   self.optionsObject.reusePrefix, rawString, self.optionsObject.reuseSuffix]
+                                                       withString:value];
         }
     }
     

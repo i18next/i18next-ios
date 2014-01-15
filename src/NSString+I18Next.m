@@ -58,7 +58,7 @@ NSString* const kI18NextKeySeparator = @".";
         if (value) {
             result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@%@%@",
                                                                    interpolationPrefix, key, interpolationSuffix]
-                                                       withString:value];
+                                                       withString:[value description]];
         }
     }
     
