@@ -236,18 +236,22 @@ static dispatch_queue_t I18NextLoaderSerialQueue() {
 
 - (void)dispatchCompleted {
     if (self.completionBlock) {
+        NSDictionary* store = self.store;
         NSError* aggregateError = nil;
         if (self.errors.count > 0) {
             aggregateError = [NSError errorWithDomain:I18NextErrorDomain code:I18NextErrorLoadFailed
                                              userInfo:@{ I18NextDetailedErrorsKey: self.errors.copy }];
         }
         
+        void (^block)(NSDictionary* store, NSError* error) = self.completionBlock;
+        self.completionBlock = nil;
+        
         if ([NSThread isMainThread]) {
-            self.completionBlock(self.store, aggregateError);
+            block(store, aggregateError);
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.completionBlock(self.store, aggregateError);
+                block(store, aggregateError);
             });
         }
     }
