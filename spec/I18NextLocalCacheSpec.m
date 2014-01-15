@@ -85,6 +85,22 @@ describe(@"I18Next", ^{
             
         });
         
+        describe(@"using synchronous load", ^{
+            
+            beforeEach(^{
+                options.loadFromLocalCache = YES;
+                options.synchronousLocalLoad = YES;
+                [i18n loadWithOptions:options.asDictionary completion:nil];
+            });
+            
+            it(@"should provide bundled resources for translation", ^{
+                expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
+                expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
+                expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
+            });
+            
+        });
+        
     });
     
 });

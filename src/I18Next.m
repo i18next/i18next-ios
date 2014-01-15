@@ -28,6 +28,7 @@ NSString* const kI18NextOptionReturnObjectTrees = @"returnObjectTrees";
 NSString* const kI18NextOptionResourcesStore = @"resourcesStore";
 NSString* const kI18NextOptionLoadFromLanguageBundles = @"loadFromLanguageBundles";
 NSString* const kI18NextOptionLoadFromLocalCache = @"loadFromLocalCache";
+NSString* const kI18NextOptionSynchronousLocalLoad = @"synchronousLocalLoad";
 NSString* const kI18NextOptionUpdateLocalCache = @"updateLocalCache";
 NSString* const kI18NextOptionNamespaceSeparator = @"namespaceSeparator";
 NSString* const kI18NextOptionKeySeparator = @"keySeparator";

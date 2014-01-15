@@ -53,7 +53,8 @@ static dispatch_queue_t I18NextLoaderSerialQueue() {
     return self;
 }
 
-- (void)loadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces completion:(void (^)(NSDictionary* store, NSError* error))completionBlock {
+- (void)loadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces
+       completion:(void (^)(NSDictionary* store, NSError* error))completionBlock {
     self.completionBlock = completionBlock;
     
     // return immediately if resources store is passed
@@ -77,7 +78,7 @@ static dispatch_queue_t I18NextLoaderSerialQueue() {
 #pragma mark Private Methods
 
 - (void)localLoadLangs:(NSArray*)langs namespaces:(NSArray*)namespaces {
-    dispatch_async(I18NextLoaderSerialQueue(), ^{
+    void (^block)(void) =  ^{
         if (self.optionsObject.loadFromLocalCache) {
             NSError* cacheError = nil;
             self.store = [I18NextCache readStoreLangs:langs
@@ -98,7 +99,14 @@ static dispatch_queue_t I18NextLoaderSerialQueue() {
         }
         
         [self dispatchCompleted];
-    });
+    };
+    
+    if (self.optionsObject.synchronousLocalLoad) {
+        block();
+    }
+    else {
+        dispatch_async(I18NextLoaderSerialQueue(), block);
+    }
     
 }
 

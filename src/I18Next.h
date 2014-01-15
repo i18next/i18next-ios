@@ -27,6 +27,7 @@ extern NSString* const kI18NextOptionReturnObjectTrees;
 extern NSString* const kI18NextOptionResourcesStore;
 extern NSString* const kI18NextOptionLoadFromLanguageBundles;
 extern NSString* const kI18NextOptionLoadFromLocalCache;
+extern NSString* const kI18NextOptionSynchronousLocalLoad;
 extern NSString* const kI18NextOptionUpdateLocalCache;
 extern NSString* const kI18NextOptionNamespaceSeparator;
 extern NSString* const kI18NextOptionKeySeparator;
@@ -191,6 +192,7 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 @property (nonatomic, copy) NSDictionary* resourcesStore;
 @property (nonatomic, assign) BOOL loadFromLanguageBundles;
 @property (nonatomic, assign) BOOL loadFromLocalCache;
+@property (nonatomic, assign) BOOL synchronousLocalLoad;
 @property (nonatomic, assign) BOOL updateLocalCache;
 @property (nonatomic, copy) NSString* namespaceSeparator;
 @property (nonatomic, copy) NSString* keySeparator;
