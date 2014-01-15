@@ -209,12 +209,18 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     
     NSArray* langs = [self languagesForLang:optionsObject.lang];
     
+    __typeof__(self) __weak weakSelf = self;
     [loader loadLangs:langs namespaces:optionsObject.namespaces completion:^(NSDictionary *store, NSError *error) {
-        self.options = dict;
+        __typeof__(self) __strong strongSelf = weakSelf;
+        if (!strongSelf) { return; }
+        
+        strongSelf.options = dict;
         
         if (store) {
-            self.resourcesStore = store;
+            strongSelf.resourcesStore = store;
         }
+        
+        strongSelf.loader = nil;
         
         if (completionBlock) {
             completionBlock(error);
