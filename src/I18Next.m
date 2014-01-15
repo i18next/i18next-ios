@@ -163,6 +163,10 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     return self;
 }
 
+- (void)dealloc {
+    [self.loader cancel];
+}
+
 - (NSString*)lang {
     return self.options[kI18NextOptionLang];
 }
