@@ -31,6 +31,7 @@
 		0F923CEB1820063200B59924 /* I18NextTranslationArraySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEA1820063200B59924 /* I18NextTranslationArraySpec.m */; };
 		0F923CED182016D300B59924 /* I18NextTranslationContextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */; };
 		0F923CF018201D8B00B59924 /* NSString+I18Next.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F923CEF18201D8B00B59924 /* NSString+I18Next.m */; };
+		0FD217D2188D3B6100A33146 /* I18NextLoadBehaviorSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FD217D1188D3B6100A33146 /* I18NextLoadBehaviorSpec.m */; };
 		0FD96A67181ED7240024F886 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD1B181EC0B00008F1C8 /* Foundation.framework */; };
 		0FD96A68181ED7240024F886 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F20FD2C181EC0B00008F1C8 /* UIKit.framework */; };
 		0FD96A77181ED7B40024F886 /* I18NextSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F20FD37181EC0B00008F1C8 /* I18NextSpec.m */; };
@@ -101,6 +102,7 @@
 		0F923CEC182016D300B59924 /* I18NextTranslationContextSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationContextSpec.m; sourceTree = "<group>"; };
 		0F923CEE18201D8B00B59924 /* NSString+I18Next.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+I18Next.h"; sourceTree = "<group>"; };
 		0F923CEF18201D8B00B59924 /* NSString+I18Next.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+I18Next.m"; sourceTree = "<group>"; };
+		0FD217D1188D3B6100A33146 /* I18NextLoadBehaviorSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextLoadBehaviorSpec.m; sourceTree = "<group>"; };
 		0FD96A64181ED7230024F886 /* i18nextspec.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = i18nextspec.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FEBFA8C1886914A004BAF6C /* I18NextTranslationNestingSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextTranslationNestingSpec.m; sourceTree = "<group>"; };
 		0FFAFF82187729F500A5EE68 /* I18NextLocalCacheSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextLocalCacheSpec.m; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				0F75F0AE182BDBC300052192 /* fixtures */,
 				0FFAFF8D187AE1E500A5EE68 /* i18next.json */,
 				0FFAFF87187AE0A400A5EE68 /* I18NextLanguageBundles.m */,
+				0FD217D1188D3B6100A33146 /* I18NextLoadBehaviorSpec.m */,
 				0F0C8166182AC555001A5CED /* I18NextLoadSpec.m */,
 				0FFAFF82187729F500A5EE68 /* I18NextLocalCacheSpec.m */,
 				0F923CE8181FDAC900B59924 /* I18NextNamespaceSpec.m */,
@@ -377,6 +380,7 @@
 				0F0C8167182AC555001A5CED /* I18NextLoadSpec.m in Sources */,
 				0F30334F182117390066DA20 /* I18NextSpecHelper.m in Sources */,
 				0F30335C18225AE50066DA20 /* I18NextTranslationPluralsSpec.m in Sources */,
+				0FD217D2188D3B6100A33146 /* I18NextLoadBehaviorSpec.m in Sources */,
 				0F30334C182107A10066DA20 /* I18NextTranslationEmptyValueSpec.m in Sources */,
 				0F30334A182102F60066DA20 /* I18NextTranslationExistsSpec.m in Sources */,
 				0F30335A182242210066DA20 /* I18NextTranslationObjectValueSpec.m in Sources */,
