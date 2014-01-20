@@ -201,6 +201,10 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
         if (!strongSelf) { return; }
         
         strongSelf.options = dict;
+        NSString* lang = langs.count ? langs[0] : nil;
+        if (lang) {
+            strongSelf.lang = lang;
+        }
         
         if (store) {
             strongSelf.resourcesStore = store;
@@ -260,7 +264,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     
     if (lang.length) {
         // Split languageCode and countryCode
-        NSRange dashRange = [lang rangeOfString:@"-"];
+        NSRange dashRange = [lang rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"-_"]];
         if (dashRange.location != NSNotFound) {
             NSString* languageCode = [lang substringToIndex:dashRange.location].lowercaseString;
             NSString* countryCode = [lang substringFromIndex:dashRange.location + dashRange.length];

@@ -82,6 +82,10 @@ describe(@"I18Next", ^{
                 expect([i18n t:@"simple_dev"]).to.equal(@"ok_from_dev");
             });
             
+            it(@"should return unspecific language", ^{
+                expect(i18n.lang).to.equal(@"en");
+            });
+            
         });
         
     });
@@ -107,6 +111,24 @@ describe(@"I18Next", ^{
             expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
             expect([i18n t:@"simple_en"]).to.equal(@"ok_from_en");
             expect([i18n t:@"simple_dev"]).toNot.equal(@"ok_from_dev");
+        });
+        
+    });
+    
+    describe(@"using an underscore to separate the language from the country code", ^{
+        
+        beforeEach(^{
+            options.lang = @"en_US";
+            options.resourcesStore = @{ @"en-US": @{ @"translation": @{ @"simple_en-US": @"ok_from_en-US" } } };
+            [i18n loadWithOptions:options.asDictionary completion:nil];
+        });
+        
+        it(@"should translate the dash separated lang value", ^{
+            expect([i18n t:@"simple_en-US"]).to.equal(@"ok_from_en-US");
+        });
+        
+        it(@"should return a dash separated lang", ^{
+            expect(i18n.lang).to.equal(@"en-US");
         });
         
     });
