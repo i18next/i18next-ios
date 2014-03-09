@@ -32,7 +32,10 @@ describe(@"I18Next", ^{
             beforeEach(^{
                 options.resourcesStore =
                 @{
-                  @"dev": @{ @"translation": @{ @"nesting1": @"1 $t(nesting2)" } },
+                  @"dev": @{ @"translation":
+                                @{ @"nesting1": @"1 $t(nesting2)",
+                                   @"multiple_nestings": @"$t(nesting1) $t(nesting3)"}
+                            },
                   @"en": @{ @"translation": @{ @"nesting2": @"2 $t(nesting3)" } },
                   @"en-US": @{ @"translation": @{ @"nesting3": @"3" } },
                   };
@@ -41,6 +44,10 @@ describe(@"I18Next", ^{
             
             it(@"should translate nested value", ^{
                 expect([i18n t:@"nesting1"]).to.equal(@"1 2 3");
+            });
+            
+            it(@"should translate multiple nested value", ^{
+                expect([i18n t:@"multiple_nestings"]).to.equal(@"1 2 3 3");
             });
             
             it(@"should apply nested value on defaultValue", ^{

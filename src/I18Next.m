@@ -433,20 +433,40 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 
 - (NSString*)replaceReusedStringsInString:(NSString*)value lang:(NSString*)lng namespace:(NSString*)ns fallbackNamespaces:(NSArray*)fallbackNamespaces variables:(NSDictionary*)variables sprintf:(I18NextSprintfArgs*)sprintf defaultValue:(NSString*)defaultValue {
     
-    NSError* error = nil;
-    
-    NSRegularExpression* regex =
-    [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"%@(.+)%@",
-                                                       [NSRegularExpression escapedPatternForString:self.optionsObject.reusePrefix],
-                                                       [NSRegularExpression escapedPatternForString:self.optionsObject.reuseSuffix]]
-                                              options:0 error:&error];
     NSMutableSet* reusedRawStrings = [NSMutableSet set];
-    [regex enumerateMatchesInString:value options:0 range:NSMakeRange(0, value.length)
-                         usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop){
-                             if (match.numberOfRanges > 1) {
-                                 [reusedRawStrings addObject:[value substringWithRange:[match rangeAtIndex:1]]];
-                             }
-                         }];
+
+    NSString* prefix = self.optionsObject.reusePrefix;
+    NSString* suffix = self.optionsObject.reuseSuffix;
+    
+    if (prefix.length && suffix.length) {
+        // Look for reuse prefix and suffix in the value string
+        NSUInteger maxLocation = value.length;
+        NSRange prefixRange = [value rangeOfString:prefix];
+        while (prefixRange.location != NSNotFound) {
+            NSUInteger startLocation = prefixRange.location + prefixRange.length;
+            if (startLocation < maxLocation) {
+                NSRange suffixRange = [value rangeOfString:suffix options:0 range:NSMakeRange(startLocation, maxLocation - startLocation)];
+                if (suffixRange.location != NSNotFound) {
+                    [reusedRawStrings addObject:[value substringWithRange:NSMakeRange(startLocation, suffixRange.location - startLocation)]];
+                    NSUInteger newStartLocation = suffixRange.location + suffixRange.length;
+                    if (newStartLocation < maxLocation) {
+                        // Continue with the next prefix
+                        prefixRange = [value rangeOfString:prefix options:0 range:NSMakeRange(newStartLocation, maxLocation - newStartLocation)];
+                    }
+                    else {
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+    }
+    
     
     NSString* result = value;
     
