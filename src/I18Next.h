@@ -171,7 +171,7 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 
 - (BOOL)exists:(NSString*)key;
 
-- (NSString*)t:(id)key, ...;
+- (NSString*)tf:(id)key, ...;
 - (NSString*)t:(id)key options:(NSDictionary*)options;
 
 @end

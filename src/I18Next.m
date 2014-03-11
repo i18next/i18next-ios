@@ -222,7 +222,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
     return !![self translateKey:key lang:nil namespace:nil context:nil count:nil variables:nil sprintf:nil defaultValue:nil];
 }
 
-- (NSString*)t:(id)key, ... {
+- (NSString*)tf:(id)key, ... {
     va_list arglist;
     va_start(arglist, key);
     NSString* result = [self t:key options:@{ kI18NextTranslateOptionSprintf: [I18NextSprintfArgs formatBlock:^NSString *(NSString *format) {

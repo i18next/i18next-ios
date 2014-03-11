@@ -48,11 +48,16 @@ describe(@"I18Next translation", ^{
             expect(value2).to.equal(@"These are mixed strings and decimals: a, 6.300000, 7.80");
         });
 
-        it(@"should recognize the sprintf syntax and automatically add the sprintf processor", ^{
-            NSString* value = [i18n t:@"interpolationTest1", @"a".UTF8String, @"b".UTF8String, @"c".UTF8String, @"d".UTF8String];
+        it(@"should support the sprintf processor when using explicitely the `tf:` method", ^{
+            NSString* value = [i18n tf:@"interpolationTest1", @"a".UTF8String, @"b".UTF8String, @"c".UTF8String, @"d".UTF8String];
             expect(value).to.equal(@"The first 4 letters of the english alphabet are: a, b, c and d");
-            NSString* value2 = [i18n t:@"interpolationTest3", @"a", 6.3f, 7.8f];
+            NSString* value2 = [i18n tf:@"interpolationTest3", @"a", 6.3f, 7.8f];
             expect(value2).to.equal(@"These are mixed strings and decimals: a, 6.300000, 7.80");
+        });
+        
+        it(@"should not consider the value as being a format string when just using  `t:`", ^{
+             NSString* value = [i18n t:@"interpolationTest1"];
+            expect(value).to.equal(@"The first 4 letters of the english alphabet are: %s, %s, %s and %s");
         });
         
     });
