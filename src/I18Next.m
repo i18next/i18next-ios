@@ -225,10 +225,15 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 - (NSString*)tf:(id)key, ... {
     va_list arglist;
     va_start(arglist, key);
-    NSString* result = [self t:key options:@{ kI18NextTranslateOptionSprintf: [I18NextSprintfArgs formatBlock:^NSString *(NSString *format) {
-        return [I18NextSprintf vsprintf:format arguments:arglist];
+    
+    void *pArgList = &arglist;
+    
+    NSString* result = [self t:key
+                       options:@{ kI18NextTranslateOptionSprintf: [I18NextSprintfArgs formatBlock:^NSString *(NSString *format) {
+        va_list *arglist = (va_list*)(pArgList);
+        return [I18NextSprintf vsprintf:format arguments:*arglist];
     }]
-                                              }];
+                                  }];
     va_end(arglist);
     
     return result;
@@ -344,7 +349,7 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
             NSString* pluralKey = [stringKey stringByAppendingString:self.optionsObject.pluralSuffix];
             NSInteger pluralNumber = [self.plurals numberForLang:(lang.length ? lang : self.optionsObject.lang) count:countInt];
             if (pluralNumber >= 0) {
-                pluralKey = [pluralKey stringByAppendingFormat:@"_%d", pluralNumber];
+                pluralKey = [pluralKey stringByAppendingFormat:@"_%ld", (long)pluralNumber];
             }
 //            else if (pluralNumber == 1) {
 //                pluralKey = stringKey;
