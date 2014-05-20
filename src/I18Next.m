@@ -80,61 +80,6 @@ static dispatch_once_t gOnceToken;
 
 @dynamic lang;
 
-static NSString* genericTranslate(id self, SEL _cmd, ...) {
-    va_list arglist;
-    va_start(arglist, _cmd);
-
-    id key = va_arg(arglist, id);
-    NSString *selectorName = NSStringFromSelector(_cmd);
-    NSArray* argNames = [selectorName componentsSeparatedByString:@":"];
-    NSMethodSignature* sig = [self methodSignatureForSelector:_cmd];
-    NSMutableDictionary* options = [NSMutableDictionary dictionaryWithCapacity:sig.numberOfArguments - 2];
-    // Loop over arguments after key
-    for (NSUInteger i = 3; i < sig.numberOfArguments; i++) {
-        const char* type = [sig getArgumentTypeAtIndex:i];
-        
-        id argValue = nil;
-        if (strcmp(type, @encode(NSUInteger)) == 0) {
-            NSUInteger count = va_arg(arglist, NSUInteger);
-            argValue = @(count);
-        }
-        else if (strcmp(type, @encode(id)) == 0) {
-            argValue = va_arg(arglist, id);
-        }
-        else {
-            NSAssert(NO, @"Unsupported argument type: '%s'", type);
-        }
-        
-        if (argValue) {
-            options[argNames[i - 2]] = argValue;
-        }
-    }
-    
-    va_end(arglist);
-    
-    return [self t:key options:options];
-}
-
-+ (BOOL)resolveInstanceMethod:(SEL)sel {
-    NSString *selectorName = NSStringFromSelector(sel);
-    NSString *prefix = @"t:";
-    if ([selectorName hasPrefix:prefix]) {
-        NSArray* args = [selectorName componentsSeparatedByString:@":"];
-        NSMutableString* types = [[NSMutableString alloc] initWithString:@"@@:"];
-        for (id arg in args) {
-            if ([arg isEqualToString:kI18NextTranslateOptionCount]) {
-                [types appendFormat:@"%s", @encode(NSUInteger)];
-            }
-            else {
-                [types appendString:@"@"];
-            }
-        }
-        class_addMethod(self, sel, (IMP)genericTranslate, types.UTF8String);
-        return YES;
-    }
-    return [super resolveInstanceMethod:sel];
-}
-
 + (instancetype)sharedInstance {
     dispatch_once(&gOnceToken, ^{
         if (!gSharedInstance) {
@@ -165,6 +110,48 @@ static NSString* genericTranslate(id self, SEL _cmd, ...) {
 
 - (void)dealloc {
     [self.loader cancel];
+}
+
+- (void)forwardInvocation:(NSInvocation *)inv {
+    NSString *selectorName = NSStringFromSelector(inv.selector);
+    NSString *prefix = @"t:";
+    if ([selectorName hasPrefix:prefix]) {
+        
+        id __unsafe_unretained key = nil;
+        [inv getArgument:&key atIndex:2];
+        
+        NSArray* argNames = [selectorName componentsSeparatedByString:@":"];
+        NSMethodSignature* sig = inv.methodSignature;
+        NSMutableDictionary* options = [NSMutableDictionary dictionaryWithCapacity:sig.numberOfArguments - 2];
+        // Loop over arguments after key
+        for (NSUInteger i = 3; i < sig.numberOfArguments; i++) {
+            const char* type = [sig getArgumentTypeAtIndex:i];
+            
+            id __unsafe_unretained argValue = nil;
+            if (strcmp(type, @encode(NSUInteger)) == 0) {
+                NSUInteger count = 0;
+                [inv getArgument:&count atIndex:i];
+                argValue = @(count);
+            }
+            else if (strcmp(type, @encode(id)) == 0) {
+                //argValue = va_arg(arglist, id);
+                [inv getArgument:&argValue atIndex:i];
+            }
+            else {
+                NSAssert(NO, @"Unsupported argument type: '%s'", type);
+            }
+            
+            if (argValue) {
+                options[argNames[i - 2]] = argValue;
+            }
+        }
+        
+        id result = [self t:key options:options];
+        [inv setReturnValue:&result];
+    }
+    else {
+        [super forwardInvocation:inv];
+    }
 }
 
 - (NSString*)lang {
