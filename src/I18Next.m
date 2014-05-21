@@ -117,7 +117,7 @@ static dispatch_once_t gOnceToken;
     NSString *prefix = @"t:";
     if ([selectorName hasPrefix:prefix]) {
         
-        id __unsafe_unretained key = nil;
+        __unsafe_unretained id key = nil;
         [inv getArgument:&key atIndex:2];
         
         NSArray* argNames = [selectorName componentsSeparatedByString:@":"];
