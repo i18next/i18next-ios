@@ -127,15 +127,16 @@ static dispatch_once_t gOnceToken;
         for (NSUInteger i = 3; i < sig.numberOfArguments; i++) {
             const char* type = [sig getArgumentTypeAtIndex:i];
             
-            id __unsafe_unretained argValue = nil;
+            id argValue = nil;
             if (strcmp(type, @encode(NSUInteger)) == 0) {
                 NSUInteger count = 0;
                 [inv getArgument:&count atIndex:i];
                 argValue = @(count);
             }
             else if (strcmp(type, @encode(id)) == 0) {
-                //argValue = va_arg(arglist, id);
-                [inv getArgument:&argValue atIndex:i];
+                __unsafe_unretained id arg = nil;
+                [inv getArgument:&arg atIndex:i];
+                argValue = arg;
             }
             else {
                 NSAssert(NO, @"Unsupported argument type: '%s'", type);
