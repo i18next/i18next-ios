@@ -474,8 +474,15 @@ static dispatch_once_t gOnceToken;
         
         key = [key stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         rawOptions = [rawOptions stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        NSDictionary* options = nil;
+
+        NSMutableDictionary* options = @{}.mutableCopy;
+        if (variables) {
+            options[kI18NextTranslateOptionVariables] = variables;
+        }
+        if (defaultValue) {
+            options[kI18NextTranslateOptionDefaultValue] = defaultValue;
+        }
+
         if (rawOptions.length) {
             NSError* jsonError = nil;
             id jsonObject = [NSJSONSerialization JSONObjectWithData:[rawOptions dataUsingEncoding:NSUTF8StringEncoding]
@@ -485,7 +492,7 @@ static dispatch_once_t gOnceToken;
                 NSLog(@"Invalid options for nested key: %@", rawString);
             }
             else {
-                options = jsonObject;
+                [options addEntriesFromDictionary:jsonObject];
             }
         }
         
