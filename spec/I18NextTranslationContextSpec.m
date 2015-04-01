@@ -58,6 +58,7 @@ describe(@"I18Next", ^{
                     expect([i18n t:@"friend_context" context:@""]).to.equal(@"A friend");
                     expect([i18n t:@"friend_context" context:@"male"]).to.equal(@"A boyfriend");
                     expect([i18n t:@"friend_context" context:@"female"]).to.equal(@"A girlfriend");
+                    expect([i18n t:@"friend_context" context:@"other"]).to.equal(@"A friend");
                 });
                 
             });

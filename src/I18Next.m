@@ -325,9 +325,15 @@ static dispatch_once_t gOnceToken;
     }
     
     if (context.length) {
-        stringKey = [stringKey stringByAppendingFormat:@"_%@", context];
+        NSString *contextKey = [stringKey stringByAppendingFormat:@"_%@", context];
+        NSString* value = [self translateKey:contextKey lang:lang namespace:ns context:nil count:count
+                                   variables:variables sprintf:sprintf defaultValue:nil];
+        if (value) {
+            return value;
+        }
+        // else continue translation with the non conextual key
     }
-    
+
     NSMutableDictionary* variablesWithCount = [NSMutableDictionary dictionaryWithDictionary:variables];
     if (count) {
         variablesWithCount[@"count"] = count.stringValue;
