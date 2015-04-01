@@ -34,22 +34,24 @@ describe(@"I18Next", ^{
             [fileManager removeItemAtPath:options.localCachePath error:&error];
         });
             
-        beforeEach(^AsyncBlock {
-            stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en-US/translation.json"));
-            stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en/translation.json"));
-            stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/dev/translation.json"));
-            
-            options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-            options.updateLocalCache = YES;
-            [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                done();
-            }];
+        beforeEach(^{
+            waitUntil(^(DoneCallback done) {
+                stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
+                .andReturn(200)
+                .withBody(fixtureData(@"locales/en-US/translation.json"));
+                stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
+                .andReturn(200)
+                .withBody(fixtureData(@"locales/en/translation.json"));
+                stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
+                .andReturn(200)
+                .withBody(fixtureData(@"locales/dev/translation.json"));
+
+                options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
+                options.updateLocalCache = YES;
+                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    done();
+                }];
+            });
         });
         
         it(@"should provide loaded resources for translation", ^{
@@ -68,13 +70,15 @@ describe(@"I18Next", ^{
         
         describe(@"on later load", ^{
             
-            beforeEach(^AsyncBlock {
-                i18n = createDefaultI18NextTestInstance();
-                options = [I18NextOptions optionsFromDict:i18n.options];
-                options.loadFromLocalCache = YES;
-                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                    done();
-                }];
+            beforeEach(^{
+                waitUntil(^(DoneCallback done) {
+                    i18n = createDefaultI18NextTestInstance();
+                    options = [I18NextOptions optionsFromDict:i18n.options];
+                    options.loadFromLocalCache = YES;
+                    [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        done();
+                    }];
+                });
             });
             
             it(@"should provide cached resources for translation", ^{

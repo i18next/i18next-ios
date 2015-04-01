@@ -30,22 +30,24 @@ describe(@"I18Next", ^{
         
         describe(@"to current", ^{
             
-            beforeEach(^AsyncBlock {
-                stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/en-US/translation.json"));
-                stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/en/translation.json"));
-                stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/dev/translation.json"));
-                
-                options.langLoadType = I18NextLangLoadTypeCurrent;
-                options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                    done();
-                }];
+            beforeEach(^{
+                waitUntil(^(DoneCallback done) {
+                    stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/en-US/translation.json"));
+                    stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/en/translation.json"));
+                    stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/dev/translation.json"));
+
+                    options.langLoadType = I18NextLangLoadTypeCurrent;
+                    options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
+                    [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        done();
+                    }];
+                });
             });
             
             it(@"should provide loaded resources for translation", ^{
@@ -58,22 +60,24 @@ describe(@"I18Next", ^{
         
         describe(@"to unspecific", ^{
             
-            beforeEach(^AsyncBlock {
-                stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/en-US/translation.json"));
-                stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/en/translation.json"));
-                stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
-                .andReturn(200)
-                .withBody(fixtureData(@"locales/dev/translation.json"));
-                
-                options.langLoadType = I18NextLangLoadTypeUnspecific;
-                options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                    done();
-                }];
+            beforeEach(^{
+                waitUntil(^(DoneCallback done) {
+                    stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/en-US/translation.json"));
+                    stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/en/translation.json"));
+                    stubRequest(@"GET", @"http:/example.com/locales/dev/translation.json")
+                    .andReturn(200)
+                    .withBody(fixtureData(@"locales/dev/translation.json"));
+
+                    options.langLoadType = I18NextLangLoadTypeUnspecific;
+                    options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
+                    [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        done();
+                    }];
+                });
             });
             
             it(@"should provide loaded resources for translation", ^{
@@ -92,19 +96,21 @@ describe(@"I18Next", ^{
     
     describe(@"with fallback language set to nil", ^{
         
-        beforeEach(^AsyncBlock {
-            stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en-US/translation.json"));
-            stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
-            .andReturn(200)
-            .withBody(fixtureData(@"locales/en/translation.json"));
-            
-            options.fallbackLang = nil;
-            options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
-            [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                done();
-            }];
+        beforeEach(^{
+            waitUntil(^(DoneCallback done) {
+                stubRequest(@"GET", @"http:/example.com/locales/en-US/translation.json")
+                .andReturn(200)
+                .withBody(fixtureData(@"locales/en-US/translation.json"));
+                stubRequest(@"GET", @"http:/example.com/locales/en/translation.json")
+                .andReturn(200)
+                .withBody(fixtureData(@"locales/en/translation.json"));
+
+                options.fallbackLang = nil;
+                options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
+                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    done();
+                }];
+            });
         });
         
         it(@"should provide loaded resources for translation", ^{

@@ -28,11 +28,13 @@ describe(@"I18Next", ^{
     
     describe(@"using language bundles", ^{
         
-        beforeEach(^AsyncBlock {
-            options.loadFromLanguageBundles = YES;
-            [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
-                done();
-            }];
+        beforeEach(^{
+            waitUntil(^(DoneCallback done) {
+                options.loadFromLanguageBundles = YES;
+                [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    done();
+                }];
+            });
         });
         
         it(@"should provide bundled resources for translation", ^{
