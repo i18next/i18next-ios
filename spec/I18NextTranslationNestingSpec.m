@@ -61,10 +61,14 @@ describe(@"I18Next", ^{
                     @{
                       @"dev": @{
                               @"translation": @{
-                                         @"nesting1_plural": @"$t(nesting2, {\"count\": __girls__}) and __count__ boys"
+                                         @"nesting1_plural": @"$t(nesting2, {\"count\": __girls__}) and __count__ boys",
+                                         @"nesting_with_interpollation": @"$t(nesting3)"
                                          }
                               },
-                      @"en": @{ @"translation": @{ @"nesting2_plural": @"__count__ girls" } },
+                      @"en": @{ @"translation": @{
+                                        @"nesting2_plural": @"__count__ girls",
+                                        @"nesting3": @"Hi __name__"
+                                        } },
                       };
                     options.lang = @"en";
                     [i18n loadWithOptions:options.asDictionary completion:nil];
@@ -72,6 +76,7 @@ describe(@"I18Next", ^{
                 
                 it(@"should translate nested value and set new options", ^{
                     expect([i18n t:@"nesting1" count:2 variables:@{ @"girls": @(3) }]).to.equal(@"3 girls and 2 boys");
+                    expect([i18n t:@"nesting_with_interpollation" variables:@{ @"name": @"John" }]).to.equal(@"Hi John");
                 });
                 
             });
