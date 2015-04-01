@@ -111,8 +111,9 @@
 		0FFAFF87187AE0A400A5EE68 /* I18NextLanguageBundles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = I18NextLanguageBundles.m; sourceTree = "<group>"; };
 		0FFAFF8E187AE20E00A5EE68 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = en.lproj/i18next.json; sourceTree = "<group>"; };
 		0FFAFF98187AE4C400A5EE68 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "en-US"; path = "en-US.lproj/i18next.json"; sourceTree = "<group>"; };
+		41F274161FADE0860CFA03A6 /* Pods-i18nextspec.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-i18nextspec.release.xcconfig"; path = "Pods/Target Support Files/Pods-i18nextspec/Pods-i18nextspec.release.xcconfig"; sourceTree = "<group>"; };
 		CF1D2EC8F35E43ADBB238CB7 /* libPods-i18nextspec.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-i18nextspec.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D636370A4AB6406ABB2AD451 /* Pods-i18nextspec.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-i18nextspec.xcconfig"; path = "Pods/Pods-i18nextspec.xcconfig"; sourceTree = "<group>"; };
+		E56EF04996851345F2134E72 /* Pods-i18nextspec.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-i18nextspec.debug.xcconfig"; path = "Pods/Target Support Files/Pods-i18nextspec/Pods-i18nextspec.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +146,7 @@
 				0F20FD31181EC0B00008F1C8 /* spec */,
 				0F20FD1A181EC0B00008F1C8 /* Frameworks */,
 				0F20FD19181EC0B00008F1C8 /* Products */,
-				D636370A4AB6406ABB2AD451 /* Pods-i18nextspec.xcconfig */,
+				824077D833A048FA8DE6C512 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -235,6 +236,15 @@
 				0F20FD33181EC0B00008F1C8 /* i18nextspec-Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		824077D833A048FA8DE6C512 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E56EF04996851345F2134E72 /* Pods-i18nextspec.debug.xcconfig */,
+				41F274161FADE0860CFA03A6 /* Pods-i18nextspec.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -336,7 +346,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-i18nextspec-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-i18nextspec/Pods-i18nextspec-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CF1435475DF848CE882EE579 /* Check Pods Manifest.lock */ = {
@@ -518,7 +528,7 @@
 		};
 		0FD96A75181ED7240024F886 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D636370A4AB6406ABB2AD451 /* Pods-i18nextspec.xcconfig */;
+			baseConfigurationReference = E56EF04996851345F2134E72 /* Pods-i18nextspec.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -539,7 +549,7 @@
 		};
 		0FD96A76181ED7240024F886 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D636370A4AB6406ABB2AD451 /* Pods-i18nextspec.xcconfig */;
+			baseConfigurationReference = 41F274161FADE0860CFA03A6 /* Pods-i18nextspec.release.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
