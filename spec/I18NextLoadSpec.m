@@ -70,6 +70,7 @@ describe(@"I18Next ", ^{
 
                             options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
                             [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                                expect(error).to.beNil();
                                 done();
                             }];
                         });
@@ -141,6 +142,7 @@ describe(@"I18Next ", ^{
                             .withBody([NSJSONSerialization dataWithJSONObject:testStore options:NSJSONWritingPrettyPrinted error:nil]);
 
                             [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                                expect(error).to.beNil();
                                 done();
                             }];
                         });

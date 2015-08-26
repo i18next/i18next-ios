@@ -45,6 +45,7 @@ describe(@"I18Next", ^{
                     options.langLoadType = I18NextLangLoadTypeCurrent;
                     options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
                     [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        expect(error).to.beNil();
                         done();
                     }];
                 });
@@ -75,6 +76,7 @@ describe(@"I18Next", ^{
                     options.langLoadType = I18NextLangLoadTypeUnspecific;
                     options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
                     [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        expect(error).to.beNil();
                         done();
                     }];
                 });
@@ -108,6 +110,7 @@ describe(@"I18Next", ^{
                 options.fallbackLang = nil;
                 options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
                 [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    expect(error).to.beNil();
                     done();
                 }];
             });

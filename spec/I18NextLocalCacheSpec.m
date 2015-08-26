@@ -49,6 +49,7 @@ describe(@"I18Next", ^{
                 options.resourcesBaseURL = [NSURL URLWithString:@"http://example.com"];
                 options.updateLocalCache = YES;
                 [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                    expect(error).to.beNil();
                     done();
                 }];
             });
@@ -76,6 +77,7 @@ describe(@"I18Next", ^{
                     options = [I18NextOptions optionsFromDict:i18n.options];
                     options.loadFromLocalCache = YES;
                     [i18n loadWithOptions:options.asDictionary completion:^(NSError *error) {
+                        expect(error).to.beNil();
                         done();
                     }];
                 });

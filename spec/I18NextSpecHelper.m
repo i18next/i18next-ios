@@ -7,10 +7,11 @@
 //
 
 #import "I18NextSpecHelper.h"
+#import "SPTGlobalBeforeAfterEach.h"
 #import "Nocilla.h"
 
 // Start/stop Nocilla globally
-@interface NocillaSpecHelper : NSObject; @end
+@interface NocillaSpecHelper : NSObject<SPTGlobalBeforeAfterEach>; @end
 @implementation NocillaSpecHelper
 + (void)beforeEach {
     [[LSNocilla sharedInstance] start];
