@@ -34,7 +34,7 @@ private
 
 def run_tests(scheme, sdk, destinations)
   destinations = destinations.map! { |destination| "-destination \'#{destination}\'" }.join(' ')
-  sh("xcodebuild -workspace i18next.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{destinations} -configuration Release clean test | bundle exec xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
+  sh("xcodebuild -workspace i18next.xcworkspace -scheme '#{scheme}' -sdk '#{sdk}' #{destinations} -configuration Release clean test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES | bundle exec xcpretty -c ; exit ${PIPESTATUS[0]}") rescue nil
 end
 
 def is_mavericks_or_above

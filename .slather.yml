@@ -1,0 +1,4 @@
+coverage_service: coveralls
+xcodeproj: i18next.xcodeproj
+ignore:
+- spec/*
