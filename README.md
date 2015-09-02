@@ -1,7 +1,7 @@
 # i18next-ios
 
-[![Build Status](https://travis-ci.org/preplay/i18next-ios.svg)](https://travis-ci.org/preplay/i18next-ios)
-[![Coverage Status](https://coveralls.io/repos/preplay/i18next-ios/badge.svg?service=github)](https://coveralls.io/github/preplay/i18next-ios)
+[![Build Status](https://travis-ci.org/i18next/i18next-ios.svg)](https://travis-ci.org/i18next/i18next-ios)
+[![Coverage Status](https://coveralls.io/repos/i18next/i18next-ios/badge.svg?service=github)](https://coveralls.io/github/i18next/i18next-ios)
 
 i18next-ios is a native iOS port of [i18next](http://i18next.com/).
 
