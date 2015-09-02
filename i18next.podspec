@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "i18next"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "i18next internationalization library for iOS"
   s.homepage     = "https://github.com/i18next/i18next-ios"
   s.license      = "MIT"
