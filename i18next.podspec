@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = "i18next"
   s.version      = "0.2.12"
-  s.summary      = "i18next translation library for objc"
+  s.summary      = "i18next internationalization library for iOS"
   s.homepage     = "https://github.com/i18next/i18next-ios"
   s.license      = "MIT"
   s.author       = { "Jean Regisser" => "jean.regisser@gmail.com" }
