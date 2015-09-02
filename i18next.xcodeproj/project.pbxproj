@@ -509,6 +509,7 @@
 		0F20FD3C181EC0B00008F1C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				DSTROOT = /tmp/i18next.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "src/i18next-Prefix.pch";
@@ -521,6 +522,7 @@
 		0F20FD3D181EC0B00008F1C8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				DSTROOT = /tmp/i18next.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "src/i18next-Prefix.pch";

@@ -276,7 +276,7 @@ static dispatch_once_t gOnceToken;
                            return (n != 1 ? 1 : 0); 
                        }],
                        @"mnk": [I18NextPluralRule ruleWithName:@"Mandinka" numbers:@[@(0), @(1), @(2)] pluralBlock:^NSUInteger(NSUInteger n) {
-                           return (0 ? 0 : n == 1 ? 1 : 2);
+                           return (n == 0 ? 0 : n == 1 ? 1 : 2);
                        }],
                        @"mr": [I18NextPluralRule ruleWithName:@"Marathi" numbers:@[@(1), @(2)] pluralBlock:^NSUInteger(NSUInteger n) {
                            return (n != 1 ? 1 : 0); 
