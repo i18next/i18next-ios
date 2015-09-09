@@ -636,7 +636,7 @@ Hint: i18next provides the functionality for all languages.
 ```java
 I18NEXT(@"friend" count:0); // -> A friend
 I18NEXT(@"friend" context:@"male"); // -> A boyfriend
-I18NEXT(@"friend" context@"female"); // -> A girlfriend
+I18NEXT(@"friend" context:@"female"); // -> A girlfriend
 ```
 
 ## Credits
