@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/i18next/i18next-ios.svg)](https://travis-ci.org/i18next/i18next-ios)
 [![Coverage Status](https://coveralls.io/repos/i18next/i18next-ios/badge.svg?service=github)](https://coveralls.io/github/i18next/i18next-ios)
 [![Cocoapods](https://img.shields.io/cocoapods/v/i18next.svg)](https://cocoapods.org/pods/i18next)
-[![License](https://img.shields.io/cocoapods/l/i18next.svg)](https://cocoapods.org/pods/i18next)
+[![License](https://img.shields.io/cocoapods/l/i18next.svg)](https://github.com/i18next/i18next-ios/blob/master/LICENSE)
 [![Platform](https://img.shields.io/cocoapods/p/i18next.svg)](https://cocoapods.org/pods/i18next)
 
 i18next-ios is a native iOS port of [i18next](http://i18next.com/).
