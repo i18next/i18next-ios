@@ -252,6 +252,10 @@ static dispatch_once_t gOnceToken;
     self.optionsObject = [I18NextOptions optionsFromDict:options];
 }
 
+- (void)setResourceStore:(NSDictionary *)resourceStore {
+        self.resourcesStore = resourceStore;
+}
+
 - (NSArray*)languagesForLang:(NSString*)lang options:(I18NextOptions*)options {
     NSMutableArray* languages = [NSMutableArray array];
     
