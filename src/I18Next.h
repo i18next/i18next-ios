@@ -157,6 +157,7 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 
 @interface I18Next : NSObject<I18NextDynamicInterface>
 
+@property (nonatomic, copy, readonly) NSDictionary* resourceStore;
 @property (nonatomic, copy) NSString* lang;
 @property (nonatomic, copy, readonly) NSDictionary* options;
 
@@ -166,6 +167,8 @@ extern NSString *const I18NextDetailedErrorsKey; // When multiple errors occur, 
 + (void)setSharedInstance:(I18Next*)instance;
 
 + (NSString*)t:(id)key;
+
+- (void)setResourceStore:(NSDictionary*)resourceStore;
 
 - (void)loadWithOptions:(NSDictionary*)options completion:(void (^)(NSError* error))completionBlock;
 
